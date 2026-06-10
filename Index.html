@@ -677,7 +677,7 @@ async function stamp(key){
   await Store.set(K_REC,records);
   const names={in:"เข้างาน",otS:"เริ่ม OT",otE:"จบ OT",out:"ออกงาน"};
   toast(e.name+" · "+names[key]+" "+fmtClock(now),"ok");
-  renderScanResult();renderDash();
+  renderScanResult();renderDash();renderReport();renderAbsence();
 }
 
 /* camera scanning */
@@ -765,7 +765,7 @@ async function classify(id,type){
   const r=rec();
   if(type)r.abs[id]=type;else delete r.abs[id];
   await Store.set(K_REC,records);
-  renderAbsence();renderDash();
+  renderAbsence();renderDash(); renderReport();
   const e=employees.find(x=>x.id===id);
   toast(type? e.name+" → "+({sick:"ลาป่วย",vac:"ลาพักร้อน",biz:"ลากิจ",abs:"ขาดงาน"}[type]):"ล้างประเภทแล้ว","ok");
 }
