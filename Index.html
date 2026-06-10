@@ -493,17 +493,22 @@ main{flex:1;padding:16px 16px 96px;}
           <button class="btn btn-line" style="flex:1" id="saveCfgBtn">บันทึกลิงก์</button>
         </div>
         <div class="field" style="margin-bottom:10px;">
-          <label>Apps Script Web App URL (สำหรับส่งข้อมูลขึ้น Sheet)</label>
+          <label>Apps Script Web App URL (ฐานข้อมูลหลัก / ส่งข้อมูลขึ้น Sheet)</label>
           <input id="cfgScript" placeholder="https://script.google.com/macros/s/.../exec" autocomplete="off" />
         </div>
-        <button class="btn btn-ghost btn-block" id="pushSheetBtn" style="background:var(--teal);">↥ ส่งข้อมูลตามช่วงที่เลือกขึ้น Google Sheet</button>
-        <button class="linkbtn" id="howToBtn" style="display:block;margin:10px auto 0;">วิธีตั้งค่า Google Sheet ▾</button>
+        <div id="dbStatus" style="font-size:12.5px;font-weight:600;margin:0 2px 10px;color:var(--muted);">⚪ ยังไม่เชื่อม Sheet</div>
+        <div style="display:flex;gap:9px;margin-bottom:10px;">
+          <button class="btn btn-line" style="flex:1" id="dbPullBtn">⟳ ดึงจาก Sheet</button>
+          <button class="btn btn-amber" style="flex:1" id="dbPushAllBtn">⤒ ส่งทั้งหมดขึ้น Sheet</button>
+        </div>
+        <button class="btn btn-ghost btn-block" id="pushSheetBtn" style="background:var(--teal);">↥ ส่ง snapshot รายงานตามช่วง (ตัวเลือกเสริม)</button>
+        <button class="linkbtn" id="howToBtn" style="display:block;margin:10px auto 0;">วิธีตั้งค่า Google Sheet เป็นฐานข้อมูล ▾</button>
         <div id="howTo" style="display:none;font-size:12.5px;color:var(--muted);line-height:1.6;background:#f7f8fb;border-radius:10px;padding:12px 13px;margin-top:8px;">
-          1. เปิด Google Sheet ใหม่ → เมนู <b>ส่วนขยาย › Apps Script</b><br>
-          2. วางสคริปต์ <code>doPost(e)</code> ที่รับ JSON แล้วเขียนลงชีต<br>
-          3. กด <b>Deploy › New deployment › Web app</b> ตั้ง Who has access = <i>Anyone</i><br>
-          4. คัดลอก URL ที่ลงท้าย <code>/exec</code> มาวางในช่องด้านบน<br>
-          (โค้ดตัวอย่าง doPost อยู่ในคำอธิบายของแชต)
+          1. เปิด Google Sheet ใหม่ → เมนู <b>Extensions › Apps Script</b><br>
+          2. วางโค้ดไฟล์ <code>Code.gs</code> (ผมแนบให้ในแชต) ทับทั้งหมด แล้วบันทึก<br>
+          3. กด <b>Deploy › New deployment › Web app</b> · Execute as = <i>Me</i> · Who has access = <i>Anyone</i><br>
+          4. คัดลอก URL ที่ลงท้าย <code>/exec</code> มาวางช่องด้านบน แล้วกด <b>บันทึกลิงก์</b><br>
+          5. กด <b>ส่งทั้งหมดขึ้น Sheet</b> 1 ครั้งเพื่อเริ่มต้นฐานข้อมูล จากนั้นทุกการเปลี่ยนแปลงจะบันทึกขึ้น Sheet อัตโนมัติ
         </div>
       </div>
 
@@ -735,12 +740,14 @@ function recalcAll(){
 }
 
 /* §3/§10 — audit logging */
-async function logCorrection(rec){ corrections.unshift(rec); await persistCorrections(); }
+async function logCorrection(rec){ corrections.unshift(rec); await persistCorrections(); SheetDB.addCorrection(rec); }
 async function logAdmin(actionType,lockedMonth){
   const now=new Date();
-  adminLog.unshift({actionType,lockedMonth:lockedMonth||"",userRole:"Admin",
-    timestamp:now.toISOString(),dateStr:ymd(now),timeStr:pad(now.getHours())+":"+pad(now.getMinutes())});
+  const entry={actionType,lockedMonth:lockedMonth||"",userRole:"Admin",
+    timestamp:now.toISOString(),dateStr:ymd(now),timeStr:pad(now.getHours())+":"+pad(now.getMinutes())};
+  adminLog.unshift(entry);
   await persistAdminLog();
+  SheetDB.addAdminLog(entry);
 }
 
 /* range helpers (§4) */
@@ -910,6 +917,7 @@ async function stamp(key){
   a[key]=now;
   if(r.abs[e.id])delete r.abs[e.id]; // clocked in => not absent
   await Store.set(K_REC,records);
+  SheetDB.upsertAttendance(curDate,e.id,a);
   const names={in:"เข้างาน",otS:"เริ่ม OT",otE:"จบ OT",out:"ออกงาน"};
   toast(e.name+" · "+names[key]+" "+fmtClock(now),"ok");
   renderScanResult();renderDash();renderReport();renderAbsence();
@@ -1001,6 +1009,7 @@ async function classify(id,type){
   const r=rec();
   if(type)r.abs[id]=type;else delete r.abs[id];
   await Store.set(K_REC,records);
+  SheetDB.setAbsence(curDate,id,type);
   renderAbsence();renderDash(); renderReport();
   const e=employees.find(x=>x.id===id);
   toast(type? e.name+" → "+({sick:"ลาป่วย",vac:"ลาพักร้อน",biz:"ลากิจ",abs:"ขาดงาน"}[type]):"ล้างประเภทแล้ว","ok");
@@ -1192,6 +1201,74 @@ async function saveConfig(){
 }
 function openGSheet(){const u=document.getElementById("cfgSheet").value.trim();
   if(!/^https?:\/\//.test(u)){toast("ใส่ลิงก์ Google Sheet ก่อน","err");return;}window.open(u,"_blank","noopener");}
+
+/* ===================================================================
+   SheetDB — ใช้ Google Sheet เป็นฐานข้อมูลหลัก
+   - load()    : ดึงข้อมูลทั้งหมดจาก Sheet (GET ?action=load)
+   - push()    : เขียนกลับทุกครั้งที่ข้อมูลเปลี่ยน (POST แบบ text/plain กัน CORS preflight)
+   - localStorage ยังทำหน้าที่เป็น cache ออฟไลน์ ถ้าเน็ตล่มแอปยังทำงานต่อได้
+   =================================================================== */
+const SheetDB={
+  status:"off",                                   // off | online | offline
+  url(){return (config.scriptUrl||"").trim();},
+  enabled(){return /^https?:\/\//.test(this.url());},
+  setStatus(s){this.status=s;updateDbStatus();},
+  async load(){
+    if(!this.enabled())return null;
+    const u=this.url()+(this.url().includes("?")?"&":"?")+"action=load&_="+Date.now();
+    const res=await fetch(u,{method:"GET"});
+    const j=await res.json();
+    if(j&&j.ok&&j.state){this.setStatus("online");return j.state;}
+    throw new Error("bad response");
+  },
+  async push(action,payload){
+    if(!this.enabled())return;
+    try{
+      await fetch(this.url(),{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},
+        body:JSON.stringify(Object.assign({action},payload))});
+      this.setStatus("online");
+    }catch(e){this.setStatus("offline");}
+  },
+  upsertAttendance(date,empId,att){return this.push("upsertAttendance",{date,empId,att});},
+  setAbsence(date,empId,type){return this.push("setAbsence",{date,empId,type:type||""});},
+  saveEmployees(){return this.push("saveEmployees",{employees});},
+  addCorrection(correction){return this.push("addCorrection",{correction});},
+  setLock(month,locked){return this.push("setLock",{month,locked});},
+  addAdminLog(entry){return this.push("addAdminLog",{entry});},
+  saveAll(){return this.push("saveAll",{state:{employees,records,corrections,locks,adminLog}});},
+};
+function updateDbStatus(){
+  const el=document.getElementById("dbStatus");if(!el)return;
+  const map={off:["⚪ ยังไม่เชื่อม Sheet","var(--muted)"],online:["🟢 เชื่อมต่อ Sheet (ฐานข้อมูลหลัก)","var(--green-d)"],
+    offline:["🔴 ออฟไลน์ — ใช้ข้อมูลในเครื่องชั่วคราว","var(--red-d)"]};
+  const[txt,col]=map[SheetDB.status]||map.off;
+  el.textContent=txt;el.style.color=col;
+}
+/* ดึงข้อมูลจาก Sheet มาแทนที่ในเครื่อง */
+async function dbPull(){
+  if(!SheetDB.enabled()){toast("ใส่ Apps Script URL แล้วกดบันทึกก่อน","err");return;}
+  toast("กำลังดึงข้อมูลจาก Sheet...","ok");
+  try{
+    const st=await SheetDB.load();
+    if(!st){toast("ดึงข้อมูลไม่สำเร็จ","err");return;}
+    if(!st.employees||!st.employees.length){toast("Sheet ยังว่าง — กด 'ส่งทั้งหมดขึ้น Sheet' เพื่อเริ่มต้น","err");return;}
+    employees=st.employees; records=st.records||{}; corrections=st.corrections||[];
+    locks=st.locks||{}; adminLog=st.adminLog||[];
+    employees.forEach(e=>{if(!e.defaultShift)e.defaultShift="day";});
+    await Store.set(K_EMP,employees);await Store.set(K_REC,records);
+    await Store.set(K_CORR,corrections);await Store.set(K_LOCK,locks);await Store.set(K_ALOG,adminLog);
+    renderAll();toast("ดึงข้อมูลจาก Sheet สำเร็จ","ok");
+  }catch(e){SheetDB.setStatus("offline");toast("ดึงข้อมูลไม่สำเร็จ ตรวจการตั้งค่า/สิทธิ์ Anyone","err");}
+}
+/* ส่งข้อมูลทั้งหมดในเครื่องขึ้น Sheet (sync ครั้งแรก/ย้ายข้อมูล) */
+async function dbPushAll(){
+  if(!SheetDB.enabled()){toast("ใส่ Apps Script URL แล้วกดบันทึกก่อน","err");return;}
+  await saveConfig();
+  toast("กำลังส่งข้อมูลทั้งหมดขึ้น Sheet...","ok");
+  await SheetDB.saveAll();
+  toast(SheetDB.status==="online"?"ส่งข้อมูลขึ้น Sheet แล้ว":"ส่งไม่สำเร็จ ตรวจการตั้งค่า","ok");
+}
+
 async function pushToSheet(){
   const url=document.getElementById("cfgScript").value.trim();
   if(!/^https?:\/\//.test(url)){toast("ใส่ Apps Script URL ก่อน","err");return;}
@@ -1258,6 +1335,7 @@ async function saveEmp(id){
     employees.push({id:newId,name,department:dept,position:pos,machine,defaultShift,active:true});
   }
   await Store.set(K_EMP,employees);
+  SheetDB.saveEmployees();
   closeSheet();renderEmpList();renderEmpFilters();renderDash();toast("บันทึกข้อมูลแล้ว","ok");
 }
 function transferSheet(id){
@@ -1265,7 +1343,7 @@ function transferSheet(id){
   openSheet(`<h2>ย้ายแผนก</h2><div class="sd">${esc(e.name)} · ปัจจุบัน ${esc(e.department)}</div>
     <div class="action-list">${DEPTS.map(d=>`<button onclick="doTransfer('${id}','${d}')"><span class="ai">${e.department===d?"●":"○"}</span> ${d}</button>`).join("")}</div>`);
 }
-async function doTransfer(id,d){const e=employees.find(x=>x.id===id);e.department=d;await Store.set(K_EMP,employees);
+async function doTransfer(id,d){const e=employees.find(x=>x.id===id);e.department=d;await Store.set(K_EMP,employees);SheetDB.saveEmployees();
   closeSheet();renderEmpList();renderDash();toast(e.name+" ย้ายไป "+d,"ok");}
 function machineSheet(id){
   const e=employees.find(x=>x.id===id);
@@ -1275,8 +1353,8 @@ function machineSheet(id){
       <button class="btn btn-amber" style="flex:2" onclick="doMachine('${id}')">บันทึก</button></div>`);
 }
 async function doMachine(id){const e=employees.find(x=>x.id===id);e.machine=document.getElementById("m_val").value.trim()||"—";
-  await Store.set(K_EMP,employees);closeSheet();renderEmpList();toast("เปลี่ยนเครื่องจักรแล้ว","ok");}
-async function toggleActive(id){const e=employees.find(x=>x.id===id);e.active=!e.active;await Store.set(K_EMP,employees);
+  await Store.set(K_EMP,employees);SheetDB.saveEmployees();closeSheet();renderEmpList();toast("เปลี่ยนเครื่องจักรแล้ว","ok");}
+async function toggleActive(id){const e=employees.find(x=>x.id===id);e.active=!e.active;await Store.set(K_EMP,employees);SheetDB.saveEmployees();
   closeSheet();renderEmpList();renderEmpFilters();renderDash();toast(e.name+(e.active?" เปิดใช้งาน":" ปิดใช้งานแล้ว"),"ok");}
 function qrSheet(id){
   const e=employees.find(x=>x.id===id);
@@ -1362,6 +1440,7 @@ async function kStamp(key){
   if(key==="out"&&a.otS&&!a.otE)a.otE=now;
   a[key]=now;if(R.abs[e.id])delete R.abs[e.id];
   await Store.set(K_REC,records);
+  SheetDB.upsertAttendance(today,e.id,a);
   const names={in:"เข้างาน",otS:"เริ่ม OT",otE:"จบ OT",out:"ออกงาน"};
   const cols={in:"var(--green)",otS:"var(--amber)",otE:"var(--steel-700)",out:"var(--red)"};
   kFlash(e.name,names[key],fmtClock(now),cols[key]);
@@ -1509,6 +1588,7 @@ async function commitCorrection(id,date,e,reason,reasonOther,override){
   R.att[id]=clean;
   if(Object.keys(clean).length && R.abs[id]) delete R.abs[id]; // มีเวลาแล้ว = ไม่ขาด
   await persistRecords();
+  SheetDB.upsertAttendance(date,id,clean);
   // §3 — สร้าง audit record
   const now=new Date();
   await logCorrection({
@@ -1553,10 +1633,10 @@ async function toggleLock(mk){
   const locked=!!locks[mk];
   if(locked){ // ปลดล็อก = ต้อง Admin
     if(!adminUnlocked){toast("ต้องใช้สิทธิ์ Admin","err");return;}
-    delete locks[mk]; await persistLocks(); await logAdmin("UNLOCK_MONTH",mk);
+    delete locks[mk]; await persistLocks(); SheetDB.setLock(mk,false); await logAdmin("UNLOCK_MONTH",mk);
     toast(monthLabel(mk)+" ปลดล็อกแล้ว","ok");
   }else{
-    locks[mk]=true; await persistLocks(); await logAdmin("LOCK_MONTH",mk);
+    locks[mk]=true; await persistLocks(); SheetDB.setLock(mk,true); await logAdmin("LOCK_MONTH",mk);
     toast(monthLabel(mk)+" ล็อกแล้ว · Payroll Period Locked","ok");
   }
   renderLockScreen(); recalcAll();
@@ -1593,9 +1673,11 @@ document.getElementById("histSearch").addEventListener("input",e=>{histQuery=e.t
 
 /* export / google sheet */
 document.getElementById("excelBtn").onclick=exportExcel;
-document.getElementById("saveCfgBtn").onclick=saveConfig;
+document.getElementById("saveCfgBtn").onclick=async()=>{await saveConfig();updateDbStatus();};
 document.getElementById("openSheetBtn").onclick=openGSheet;
 document.getElementById("pushSheetBtn").onclick=pushToSheet;
+document.getElementById("dbPullBtn").onclick=dbPull;
+document.getElementById("dbPushAllBtn").onclick=dbPushAll;
 document.getElementById("howToBtn").onclick=()=>{const h=document.getElementById("howTo");h.style.display=h.style.display==="none"?"block":"none";};
 
 /* kiosk link controls */
@@ -1631,6 +1713,20 @@ try{
   await load();
   await loadConfig();
   defaultRange();
+  // ใช้ Google Sheet เป็นฐานข้อมูลหลัก: ถ้าตั้งค่าไว้ ให้ดึงข้อมูลล่าสุดมาก่อน
+  if(SheetDB.enabled()){
+    try{
+      const st=await SheetDB.load();
+      if(st&&st.employees&&st.employees.length){
+        employees=st.employees;records=st.records||{};corrections=st.corrections||[];
+        locks=st.locks||{};adminLog=st.adminLog||[];
+        employees.forEach(e=>{if(!e.defaultShift)e.defaultShift="day";});
+        await Store.set(K_EMP,employees);await Store.set(K_REC,records);
+        await Store.set(K_CORR,corrections);await Store.set(K_LOCK,locks);await Store.set(K_ALOG,adminLog);
+      }
+    }catch(e){SheetDB.setStatus("offline");}
+  }
+  updateDbStatus();
   renderAll();
   if(location.hash.toLowerCase().includes("kiosk")||/[?&]kiosk\b/i.test(location.search))enterKiosk();
 })();
