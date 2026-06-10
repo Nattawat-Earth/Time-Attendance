@@ -12,7 +12,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap');
-
+ 
 :root{
   --steel-900:#161b26; --steel-800:#1f2633; --steel-700:#2b3444; --steel-600:#3a4658;
   --concrete:#eceef2; --surface:#ffffff; --line:#d8dce4; --line-soft:#e6e9ef;
@@ -35,10 +35,10 @@ body{
 }
 .mono{font-family:'IBM Plex Mono',monospace;}
 .cond{font-family:'Barlow Condensed','IBM Plex Sans Thai',sans-serif;letter-spacing:.3px;}
-
+ 
 /* ===== App shell ===== */
 #app{max-width:520px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;background:var(--concrete);position:relative;}
-
+ 
 /* ===== Top bar ===== */
 .appbar{
   position:sticky;top:0;z-index:30;
@@ -60,7 +60,7 @@ body{
 .date-nav button:active{background:var(--steel-600);}
 .date-nav .dlabel{font-size:12px;color:#fff;min-width:74px;text-align:center;font-weight:600;}
 #installBtn{display:none;margin-top:10px;width:100%;background:var(--amber);color:#231400;border:none;padding:9px;border-radius:9px;font-weight:600;font-family:inherit;font-size:13px;}
-
+ 
 /* ===== Screens ===== */
 main{flex:1;padding:16px 16px 96px;}
 .screen{display:none;animation:fade .22s ease;}
@@ -69,7 +69,7 @@ main{flex:1;padding:16px 16px 96px;}
 .scr-head{display:flex;align-items:baseline;justify-content:space-between;margin:2px 0 14px;}
 .scr-head h1{font-size:20px;margin:0;font-weight:700;letter-spacing:-.2px;}
 .scr-head .sub{font-size:12px;color:var(--muted);}
-
+ 
 /* ===== Shift board (dashboard) ===== */
 .board{
   background:var(--steel-900);border-radius:var(--r);padding:16px 14px 14px;color:#fff;
@@ -91,7 +91,7 @@ main{flex:1;padding:16px 16px 96px;}
 .tile.blue .lamp{background:var(--blue);box-shadow:0 0 10px var(--blue);}
 .tile.teal .lamp{background:var(--teal);box-shadow:0 0 10px var(--teal);}
 .tile.amber .lamp{background:var(--amber);box-shadow:0 0 10px var(--amber);}
-
+ 
 /* completion meter */
 .meter-wrap{background:var(--surface);border-radius:var(--r);padding:15px 16px;box-shadow:var(--shadow);margin-bottom:14px;}
 .meter-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:10px;}
@@ -101,19 +101,19 @@ main{flex:1;padding:16px 16px 96px;}
 .segbar i{flex:1;height:12px;border-radius:3px;background:var(--line-soft);}
 .segbar i.lit{background:var(--green);}
 .segbar i.warn.lit{background:var(--amber);}
-
+ 
 /* validation strip */
 .valstrip{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;}
 .valcard{background:var(--surface);border-radius:var(--r-sm);padding:13px 12px;box-shadow:var(--shadow);text-align:center;}
 .valcard .n{font-family:'Barlow Condensed',sans-serif;font-size:30px;font-weight:700;line-height:1;}
 .valcard .l{font-size:11px;color:var(--muted);margin-top:4px;}
 .valcard.miss .n{color:var(--red);}
-
+ 
 /* generic card / list */
 .card{background:var(--surface);border-radius:var(--r);box-shadow:var(--shadow);}
 .section-t{font-size:13px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin:18px 2px 9px;}
 .empty{background:var(--surface);border:1.5px dashed var(--line);border-radius:var(--r);padding:26px 18px;text-align:center;color:var(--muted);font-size:13.5px;}
-
+ 
 /* ===== Scan terminal ===== */
 .terminal{background:var(--steel-900);border-radius:var(--r);padding:16px;color:#fff;box-shadow:var(--shadow);}
 .viewfinder{
@@ -143,7 +143,7 @@ main{flex:1;padding:16px 16px 96px;}
 .manual input{flex:1;background:var(--steel-800);border:1px solid var(--steel-600);color:#fff;
   border-radius:10px;padding:12px 13px;font-family:'IBM Plex Mono',monospace;font-size:15px;letter-spacing:1px;}
 .manual input::placeholder{color:#5d6678;}
-
+ 
 /* employee result card after scan */
 .empcard{background:var(--surface);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden;margin-top:14px;}
 .empcard-top{display:flex;gap:13px;padding:16px;border-bottom:1px solid var(--line-soft);align-items:center;}
@@ -156,7 +156,7 @@ main{flex:1;padding:16px 16px 96px;}
 .chip.machine{background:#eef1f7;color:var(--steel-700);font-family:'IBM Plex Mono',monospace;}
 .statusbar{padding:11px 16px;font-size:12.5px;display:flex;align-items:center;gap:8px;background:#f7f8fb;}
 .dot{width:9px;height:9px;border-radius:50%;flex:none;}
-
+ 
 /* panel action buttons (machine-style) */
 .panel-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px 16px 16px;}
 .pbtn{font-family:inherit;border:none;border-radius:12px;padding:15px 10px;font-weight:700;font-size:14.5px;cursor:pointer;
@@ -167,7 +167,7 @@ main{flex:1;padding:16px 16px 96px;}
 .pbtn.ots{background:var(--amber);color:#241500;} .pbtn.ote{background:var(--steel-700);}
 .pbtn:disabled{background:#e7eaf0;color:#aab1bf;box-shadow:none;cursor:not-allowed;}
 .pbtn:disabled small{color:#bcc2cf;}
-
+ 
 /* timeline */
 .timeline{padding:0 16px 16px;}
 .tl-row{display:flex;align-items:center;gap:11px;padding:8px 0;border-top:1px dashed var(--line-soft);font-size:13px;}
@@ -175,7 +175,7 @@ main{flex:1;padding:16px 16px 96px;}
 .tl-ic{width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;flex:none;color:#fff;}
 .tl-row .when{margin-left:auto;font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--ink);font-weight:500;}
 .tl-row .miss{color:var(--muted-2);font-style:italic;}
-
+ 
 /* ===== Employee master list ===== */
 .toolbar{display:flex;gap:8px;margin-bottom:12px;}
 .search{flex:1;display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:11px;padding:0 12px;}
@@ -197,7 +197,7 @@ main{flex:1;padding:16px 16px 96px;}
 .badge.act{background:#e3f5ea;color:var(--green-d);}
 .badge.inact{background:#f0f1f4;color:var(--muted);}
 .erow .chev{color:var(--muted-2);font-size:20px;}
-
+ 
 /* ===== Absence ===== */
 .abs-card{background:var(--surface);border-radius:var(--r);box-shadow:var(--shadow);padding:13px 14px;margin-bottom:10px;}
 .abs-card .who{display:flex;align-items:center;gap:11px;margin-bottom:11px;}
@@ -212,7 +212,7 @@ main{flex:1;padding:16px 16px 96px;}
 .classified-tag{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:5px 11px;border-radius:8px;}
 .abs-done{display:flex;align-items:center;justify-content:space-between;}
 .linkbtn{background:none;border:none;color:var(--blue);font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer;padding:4px;}
-
+ 
 /* ===== Reports ===== */
 .ot-row{display:flex;align-items:center;gap:12px;padding:12px 14px;border-top:1px solid var(--line-soft);}
 .ot-row:first-child{border-top:none;}
@@ -221,7 +221,7 @@ main{flex:1;padding:16px 16px 96px;}
 .ot-row .sub{font-size:11.5px;color:var(--muted);font-family:'IBM Plex Mono',monospace;}
 .ot-row .hrs{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:22px;color:var(--amber-d);text-align:right;line-height:1;}
 .ot-row .hrs small{display:block;font-family:'IBM Plex Sans Thai';font-size:10.5px;color:var(--muted);font-weight:500;}
-
+ 
 /* ===== Work-time summary ===== */
 .wt-totals{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
 .wt-tot{background:var(--surface);border-radius:var(--r-sm);box-shadow:var(--shadow);padding:12px 14px;position:relative;overflow:hidden;}
@@ -244,7 +244,7 @@ main{flex:1;padding:16px 16px 96px;}
 .wt-figs .f .t{font-size:9.5px;letter-spacing:.4px;text-transform:uppercase;color:var(--muted-2);margin-top:2px;}
 .wt-figs .f.reg .n{color:var(--green-d);} .wt-figs .f.ot .n{color:var(--amber-d);}
 .wt-pend{font-size:10px;color:var(--amber-d);font-weight:600;}
-
+ 
 /* ===== Bottom nav ===== */
 .tabbar{
   position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:520px;z-index:40;
@@ -256,7 +256,7 @@ main{flex:1;padding:16px 16px 96px;}
 .tab svg{width:23px;height:23px;}
 .tab.on{color:var(--steel-900);}
 .tab.on svg{stroke:var(--amber);}
-
+ 
 /* ===== Modal / sheet ===== */
 .scrim{position:fixed;inset:0;background:rgba(20,24,33,.5);z-index:50;display:none;align-items:flex-end;justify-content:center;}
 .scrim.on{display:flex;animation:fade .18s;}
@@ -281,17 +281,17 @@ main{flex:1;padding:16px 16px 96px;}
 #qrCanvas{display:flex;justify-content:center;padding:20px;background:#fff;border-radius:12px;margin:6px auto 14px;width:fit-content;border:1px solid var(--line-soft);}
 .qr-meta{text-align:center;font-size:13px;color:var(--muted);margin-bottom:16px;}
 .qr-meta b{color:var(--ink);font-size:16px;display:block;}
-
+ 
 /* toast */
 #toast{position:fixed;bottom:88px;left:50%;transform:translateX(-50%) translateY(20px);z-index:60;
   background:var(--steel-900);color:#fff;padding:12px 18px;border-radius:12px;font-size:13.5px;font-weight:500;
   box-shadow:0 10px 30px -8px rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:.25s;max-width:90%;text-align:center;}
 #toast.on{opacity:1;transform:translateX(-50%) translateY(0);}
 #toast.ok{border-left:4px solid var(--green);} #toast.err{border-left:4px solid var(--red);}
-
+ 
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
 :focus-visible{outline:2px solid var(--amber);outline-offset:2px;}
-
+ 
 /* ===== KIOSK MODE ===== */
 #kiosk{position:fixed;inset:0;z-index:100;background:var(--steel-900);color:#fff;display:none;
   flex-direction:column;max-width:520px;margin:0 auto;overflow-y:auto;}
@@ -316,7 +316,7 @@ main{flex:1;padding:16px 16px 96px;}
 .k-flash .nm{font-size:26px;font-weight:700;color:#fff;}
 .k-flash .ac{font-size:17px;margin-top:6px;}
 .k-flash .tm{font-family:'IBM Plex Mono',monospace;font-size:40px;font-weight:600;color:#fff;margin-top:14px;letter-spacing:2px;}
-
+ 
 /* ===== Enterprise add-ons (correction / lock / shift) ===== */
 .menu-btn{background:var(--steel-700);border:none;color:#fff;width:34px;height:34px;border-radius:9px;font-size:18px;cursor:pointer;flex:none;}
 .menu-btn:active{background:var(--steel-600);}
@@ -378,17 +378,17 @@ main{flex:1;padding:16px 16px 96px;}
     </div>
     <button id="installBtn">ติดตั้งแอปลงในหน้าจอหลัก</button>
   </header>
-
+ 
   <main>
     <!-- ===== DASHBOARD ===== -->
     <section class="screen on" id="screen-dash">
       <div class="scr-head"><h1>ภาพรวมกะ</h1><span class="sub" id="dashSub"></span></div>
-
+ 
       <div class="board">
         <div class="board-top"><span class="ttl">สถานะกำลังคน</span><span class="shift" id="shiftTag">— คน</span></div>
         <div class="tiles" id="dashTiles"></div>
       </div>
-
+ 
       <div class="meter-wrap">
         <div class="meter-head">
           <span class="t">ความครบถ้วนการบันทึก<br><span style="font-size:11px;color:var(--muted-2)">Attendance completion</span></span>
@@ -396,18 +396,18 @@ main{flex:1;padding:16px 16px 96px;}
         </div>
         <div class="segbar" id="compBar"></div>
       </div>
-
+ 
       <div class="section-t">ตรวจสอบความครบถ้วน</div>
       <div class="valstrip">
         <div class="valcard"><div class="n" id="vActive">0</div><div class="l">พนักงาน Active</div></div>
         <div class="valcard"><div class="n" id="vRec">0</div><div class="l">บันทึกแล้ว</div></div>
         <div class="valcard miss"><div class="n" id="vMiss">0</div><div class="l">ยังขาด</div></div>
       </div>
-
+ 
       <div class="section-t">ยังไม่มีบันทึก</div>
       <div id="dashMissing"></div>
     </section>
-
+ 
     <!-- ===== SCAN / ATTENDANCE ===== -->
     <section class="screen" id="screen-scan">
       <div class="scr-head"><h1>สแกนลงเวลา</h1><span class="sub">QR = รหัสพนักงาน</span></div>
@@ -428,7 +428,7 @@ main{flex:1;padding:16px 16px 96px;}
       </div>
       <div id="scanResult"></div>
     </section>
-
+ 
     <!-- ===== EMPLOYEE MASTER ===== -->
     <section class="screen" id="screen-emp">
       <div class="scr-head"><h1>ข้อมูลพนักงาน</h1><span class="sub" id="empCount"></span></div>
@@ -442,7 +442,7 @@ main{flex:1;padding:16px 16px 96px;}
       <div class="filters" id="deptFilters"></div>
       <div class="elist" id="empList"></div>
     </section>
-
+ 
     <!-- ===== ABSENCE ===== -->
     <section class="screen" id="screen-absence">
       <div class="scr-head"><h1>จัดการขาดงาน</h1><span class="sub">หัวหน้าระบุประเภท</span></div>
@@ -451,7 +451,7 @@ main{flex:1;padding:16px 16px 96px;}
       <div class="section-t">จัดประเภทแล้ว</div>
       <div id="absDone"></div>
     </section>
-
+ 
     <!-- ===== REPORTS ===== -->
     <section class="screen" id="screen-report">
       <div class="scr-head"><h1>รายงาน</h1><span class="sub" id="repDate"></span></div>
@@ -473,14 +473,14 @@ main{flex:1;padding:16px 16px 96px;}
       <div class="card" id="wtList" style="padding:4px 0;"></div>
       <div class="section-t">สรุป OT (รวมทั้งช่วง · เรียงมาก→น้อย)</div>
       <div class="card" id="otList" style="padding:4px 0;"></div>
-
+ 
       <div class="section-t">ประวัติการแก้ไขเวลา (Correction History)</div>
       <div class="search" style="margin-bottom:8px;">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
         <input id="histSearch" placeholder="ค้นหาชื่อ / รหัส / เหตุผล" autocomplete="off" />
       </div>
       <div class="card" id="histList" style="padding:4px 0;"></div>
-
+ 
       <div class="section-t">ส่งออก & เชื่อมต่อ</div>
       <div class="card" style="padding:14px 16px;">
         <button class="btn btn-amber btn-block" id="excelBtn" style="margin-bottom:10px;">⤓ ดาวน์โหลด Excel ตามช่วงที่เลือก (.xlsx)</button>
@@ -493,7 +493,7 @@ main{flex:1;padding:16px 16px 96px;}
           <button class="btn btn-line" style="flex:1" id="saveCfgBtn">บันทึกลิงก์</button>
         </div>
         <div class="field" style="margin-bottom:10px;">
-          <label>Apps Script Web App URL (https://script.google.com/macros/s/AKfycbxj-_f0yU0KU4cKHfm2G0rBcW7B18vHMGunqwCTbBOYRgS-xwSCu65H7UNablBbboap/exec)</label>
+          <label>Apps Script Web App URL (ฐานข้อมูลหลัก / ส่งข้อมูลขึ้น Sheet)</label>
           <input id="cfgScript" placeholder="https://script.google.com/macros/s/.../exec" autocomplete="off" />
         </div>
         <div id="dbStatus" style="font-size:12.5px;font-weight:600;margin:0 2px 10px;color:var(--muted);">⚪ ยังไม่เชื่อม Sheet</div>
@@ -511,7 +511,7 @@ main{flex:1;padding:16px 16px 96px;}
           5. กด <b>ส่งทั้งหมดขึ้น Sheet</b> 1 ครั้งเพื่อเริ่มต้นฐานข้อมูล จากนั้นทุกการเปลี่ยนแปลงจะบันทึกขึ้น Sheet อัตโนมัติ
         </div>
       </div>
-
+ 
       <div class="section-t">ลิงก์สำหรับพนักงาน (Kiosk)</div>
       <div class="card" style="padding:14px 16px;">
         <p style="margin:0 0 12px;font-size:13px;color:var(--muted);">โหมดสแกนลงเวลาอย่างเดียว — พนักงานจะเห็นแค่หน้าสแกน ไม่เห็นเมนูจัดการ ภาพรวม หรือรายงาน</p>
@@ -525,7 +525,7 @@ main{flex:1;padding:16px 16px 96px;}
         </div>
       </div>
     </section>
-
+ 
     <!-- ===== ATTENDANCE CORRECTION (Leader) ===== -->
     <section class="screen" id="screen-correct">
       <div class="scr-back">
@@ -558,7 +558,7 @@ main{flex:1;padding:16px 16px 96px;}
         </div>
       </div>
     </section>
-
+ 
     <!-- ===== PAYROLL LOCK (Admin) ===== -->
     <section class="screen" id="screen-lock">
       <div class="scr-back">
@@ -571,7 +571,7 @@ main{flex:1;padding:16px 16px 96px;}
       <div class="card" id="adminAuditList" style="padding:4px 0;"></div>
     </section>
   </main>
-
+ 
   <!-- BOTTOM NAV -->
   <nav class="tabbar">
     <button class="tab on" data-screen="dash">
@@ -591,7 +591,7 @@ main{flex:1;padding:16px 16px 96px;}
       รายงาน</button>
   </nav>
 </div>
-
+ 
 <!-- KIOSK (employee scan-only) -->
 <div id="kiosk">
   <div class="k-bar">
@@ -618,14 +618,14 @@ main{flex:1;padding:16px 16px 96px;}
   <div class="k-foot"><a href="#" id="kExit">เข้าสู่ระบบจัดการ ShiftBoard →</a></div>
 </div>
 <div class="k-flash" id="kFlash"></div>
-
+ 
 <!-- SCRIM / SHEET -->
 <div class="scrim" id="scrim"><div class="sheet" id="sheet"></div></div>
 <div id="toast"></div>
-
+ 
 <script>
 "use strict";
-
+ 
 /* ---------- storage layer (window.storage w/ in-memory fallback) ---------- */
 const Store = {
   async get(k){
@@ -636,7 +636,7 @@ const Store = {
 };
 const K_EMP="wf:employees", K_REC="wf:records", K_CFG="wf:config",
       K_CORR="wf:corrections", K_LOCK="wf:locks", K_ALOG="wf:adminlog";
-
+ 
 /* ---------- state ---------- */
 let employees=[];
 let records={};            // { 'YYYY-MM-DD': { att:{id:{in,otS,otE,out}}, abs:{id:type} } }
@@ -649,12 +649,12 @@ let scanner=null, currentEmp=null;
 let repStart=null, repEnd=null;        // ช่วงวันที่ของรายงาน
 let leaderUnlocked=false, adminUnlocked=false;  // สิทธิ์ในเซสชันนี้ (ไม่บันทึกถาวร)
 let histQuery="";
-
+ 
 /* ---------- credentials (ฝั่ง client = ด่านกันพลาดภายในเท่านั้น ไม่ใช่ security จริง) ---------- */
 const LEADER_PW="basketball11", ADMIN_PW="Nantana2026";
-
+ 
 const DEPTS=["ประกอบ","แพ็คกิ้ง","QC","ซ่อมบำรุง","คลังสินค้า"];
-
+ 
 /* ---------- shift metadata (ข้อ 5/6) ---------- */
 const SHIFT={
   day:  {key:"day",  label:"DAY SHIFT",   th:"กะกลางวัน",  work:"08:00–17:00", brk:"17:00–17:30", otFrom:"17:30", otFromMin:17*60+30},
@@ -673,7 +673,7 @@ function shiftOf(att,emp){
   return SHIFT.day;
 }
 function shiftChip(s){ return s? `<span class="shift-chip ${s.key}">${s.label}</span>` : `<span class="shift-chip none">— ยังไม่ระบุกะ</span>`; }
-
+ 
 /* ---------- helpers ---------- */
 function ymd(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
 function pad(n){return String(n).padStart(2,"0");}
@@ -689,7 +689,7 @@ function otHours(r){ if(!r||!r.otS||!r.otE) return 0; const ms=new Date(r.otE)-n
 function fmtHours(h){ if(h<=0) return "0 ชม."; const H=Math.floor(h), M=Math.round((h-H)*60);
   return (H>0?H+" ชม. ":"")+(M>0?M+" นาที":(H>0?"":"0 นาที")); }
 function activeEmps(){return employees.filter(e=>e.active);}
-
+ 
 /* ===== คำนวณเวลาทำงาน: ฐาน 8 ชม. ส่วนที่เกินเป็น OT ===== */
 const STD_MIN=8*60;                       // ชั่วโมงทำงานมาตรฐาน = 8 ชม.
 function fmtHM(min){                       // แสดงผลเป็น "H ชม. M นาที"
@@ -716,7 +716,7 @@ function workSummary(a){
   const ot=otBlock+over;                    // OT รวม = OT ที่บันทึก + ส่วนเกิน 8 ชม.
   return {regular,ot,total:regular+ot,complete:!!a.out};
 }
-
+ 
 /* ===================================================================
    DATA SERVICE — รวมศูนย์การเข้าถึง/บันทึกข้อมูล (รองรับย้ายไป DB อนาคต)
    =================================================================== */
@@ -730,7 +730,7 @@ async function persistRecords(){ await Store.set(K_REC,records); }
 async function persistCorrections(){ await Store.set(K_CORR,corrections); }
 async function persistLocks(){ await Store.set(K_LOCK,locks); }
 async function persistAdminLog(){ await Store.set(K_ALOG,adminLog); }
-
+ 
 /* §11 — recalc/refresh ทุกหน้าหลังข้อมูลเปลี่ยน (ไม่ต้องรีเฟรชเอง) */
 function recalcAll(){
   renderDash(); renderAbsence(); renderReport();
@@ -738,7 +738,7 @@ function recalcAll(){
   if(document.getElementById("screen-correct").classList.contains("on")) renderCorrectionForm();
   if(document.getElementById("screen-lock").classList.contains("on")) renderLockScreen();
 }
-
+ 
 /* §3/§10 — audit logging */
 async function logCorrection(rec){ corrections.unshift(rec); await persistCorrections(); SheetDB.addCorrection(rec); }
 async function logAdmin(actionType,lockedMonth){
@@ -749,7 +749,7 @@ async function logAdmin(actionType,lockedMonth){
   await persistAdminLog();
   SheetDB.addAdminLog(entry);
 }
-
+ 
 /* range helpers (§4) */
 function datesInRange(start,end){
   const out=[];if(!start||!end)return out;
@@ -760,10 +760,10 @@ function datesInRange(start,end){
 }
 function rangeDates(){return datesInRange(repStart,repEnd);}
 function defaultRange(){const n=new Date();repStart=ymd(new Date(n.getFullYear(),n.getMonth(),1));repEnd=ymd(n);}
-
+ 
 function toast(msg,type){const t=document.getElementById("toast");t.textContent=msg;t.className="on "+(type||"ok");
   clearTimeout(t._t);t._t=setTimeout(()=>t.className=t.className.replace("on","").trim(),2200);}
-
+ 
 /* ---------- seed ---------- */
 async function load(){
   employees=await Store.get(K_EMP);
@@ -794,7 +794,7 @@ async function load(){
   // ความเข้ากันได้ย้อนหลัง: พนักงานที่ยังไม่มี defaultShift ให้เป็นกะกลางวัน
   employees.forEach(e=>{ if(!e.defaultShift) e.defaultShift="day"; });
 }
-
+ 
 /* ---------- date nav ---------- */
 function setDate(delta){
   const[y,m,d]=curDate.split("-").map(Number);const dt=new Date(y,m-1,d);dt.setDate(dt.getDate()+delta);
@@ -803,7 +803,7 @@ function setDate(delta){
   curDate=ymd(dt);renderAll();
 }
 function updateDateLabel(){document.getElementById("dLabel").textContent=isToday(curDate)?"วันนี้":thDate(curDate);}
-
+ 
 /* ---------- DASHBOARD ---------- */
 function stats(){
   const act=activeEmps();const r=rec();
@@ -832,16 +832,16 @@ function renderDash(){
   ];
   document.getElementById("dashTiles").innerHTML=tiles.map(([c,l,n])=>
     `<div class="tile ${c}"><span class="lamp"></span><div class="num">${n}</div><div class="lab">${l}</div></div>`).join("");
-
+ 
   document.getElementById("compPct").textContent=s.comp+"%";
   const segs=20,lit=Math.round(s.comp/100*segs);
   let bar="";for(let i=0;i<segs;i++){const on=i<lit;const warn=s.comp<100;bar+=`<i class="${on?"lit":""} ${warn?"warn":""}"></i>`;}
   document.getElementById("compBar").innerHTML=bar;
-
+ 
   document.getElementById("vActive").textContent=s.total;
   document.getElementById("vRec").textContent=s.present;
   document.getElementById("vMiss").textContent=s.missing;
-
+ 
   const r=rec();
   const missing=activeEmps().filter(e=>!(r.att[e.id]&&r.att[e.id].in)&&!r.abs[e.id]);
   const wrap=document.getElementById("dashMissing");
@@ -854,7 +854,7 @@ function renderDash(){
       <span class="chip machine">${esc(e.machine)}</span>
     </div>`).join("")+`</div>`;
 }
-
+ 
 /* ---------- SCAN ---------- */
 function gotoScan(id){switchScreen("scan");resolveEmp(id);}
 function resolveEmp(id){
@@ -875,7 +875,7 @@ function renderScanResult(){
   else if(has("otS")&&!has("otE")){statusTxt="กำลังทำ OT";statusColor="var(--amber)";}
   else if(has("in")){statusTxt="อยู่ในกะ";statusColor="var(--green)";}
   else{statusTxt="ยังไม่ลงเวลา";statusColor="var(--muted-2)";}
-
+ 
   const acts=[
     {k:"in",cls:"in",label:"เข้างาน",sub:"Clock In",dis:has("in")},
     {k:"otS",cls:"ots",label:"เริ่ม OT",sub:"Start OT",dis:!has("in")||has("otS")||has("out")},
@@ -922,7 +922,7 @@ async function stamp(key){
   toast(e.name+" · "+names[key]+" "+fmtClock(now),"ok");
   renderScanResult();renderDash();renderReport();renderAbsence();
 }
-
+ 
 /* camera scanning */
 function startScan(){
   if(typeof Html5Qrcode==="undefined"){toast("ตัวอ่าน QR โหลดไม่สำเร็จ ใช้กรอกรหัสแทน","err");return;}
@@ -943,7 +943,7 @@ function stopScan(){
   document.getElementById("vfHint").style.display="block";
   if(scanner){scanner.stop().then(()=>scanner.clear()).catch(()=>{});scanner=null;}
 }
-
+ 
 /* ---------- EMPLOYEE MASTER ---------- */
 function renderEmpFilters(){
   const opts=["all",...DEPTS,"inactive"];
@@ -974,14 +974,14 @@ function renderEmpList(){
       <span class="chev">›</span>
     </div>`).join("");
 }
-
+ 
 /* ---------- ABSENCE ---------- */
 function renderAbsence(){
   const r=rec();
   const pending=activeEmps().filter(e=>!(r.att[e.id]&&r.att[e.id].in)&&!r.abs[e.id]);
   const done=activeEmps().filter(e=>r.abs[e.id]);
   const types=[["sick","ลาป่วย"],["vac","พักร้อน"],["biz","ลากิจ"],["abs","ขาด"]];
-
+ 
   const pEl=document.getElementById("absPending");
   pEl.innerHTML=pending.length? pending.map(e=>`
     <div class="abs-card">
@@ -991,7 +991,7 @@ function renderAbsence(){
         ${types.map(([k,l])=>`<button class="cbtn ${k}" onclick="classify('${e.id}','${k}')"><span class="cd ${k}"></span>${l}</button>`).join("")}
       </div>
     </div>`).join(""):`<div class="empty">ไม่มีพนักงานค้างจัดประเภท</div>`;
-
+ 
   const dEl=document.getElementById("absDone");
   const tmap={sick:["ลาป่วย","orange"],vac:["ลาพักร้อน","blue"],biz:["ลากิจ","teal"],abs:["ขาดงาน","red"]};
   dEl.innerHTML=done.length? done.map(e=>{const[lab,col]=tmap[r.abs[e.id]];
@@ -1014,7 +1014,7 @@ async function classify(id,type){
   const e=employees.find(x=>x.id===id);
   toast(type? e.name+" → "+({sick:"ลาป่วย",vac:"ลาพักร้อน",biz:"ลากิจ",abs:"ขาดงาน"}[type]):"ล้างประเภทแล้ว","ok");
 }
-
+ 
 /* ---------- REPORTS ---------- */
 /* ===================================================================
    REPORT — แบบช่วงวันที่ (§4) + สรุปตามกะ (§7) + ประวัติการแก้ไข (§3)
@@ -1188,7 +1188,7 @@ function exportExcel(){
     toast("ดาวน์โหลดไฟล์ Excel แล้ว","ok");
   }catch(e){toast("สร้างไฟล์ไม่สำเร็จ","err");}
 }
-
+ 
 /* ---------- Google Sheet config ---------- */
 let config={sheetUrl:"",scriptUrl:""};
 async function loadConfig(){const c=await Store.get(K_CFG);if(c)config=c;
@@ -1201,7 +1201,7 @@ async function saveConfig(){
 }
 function openGSheet(){const u=document.getElementById("cfgSheet").value.trim();
   if(!/^https?:\/\//.test(u)){toast("ใส่ลิงก์ Google Sheet ก่อน","err");return;}window.open(u,"_blank","noopener");}
-
+ 
 /* ===================================================================
    SheetDB — ใช้ Google Sheet เป็นฐานข้อมูลหลัก
    - load()    : ดึงข้อมูลทั้งหมดจาก Sheet (GET ?action=load)
@@ -1222,16 +1222,21 @@ const SheetDB={
     throw new Error("bad response");
   },
   async push(action,payload){
-    if(!this.enabled())return;
+    if(!this.enabled())return {ok:false};
+    const body=JSON.stringify(Object.assign({action},payload));
     try{
-      await fetch(this.url(),{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},
-        body:JSON.stringify(Object.assign({action},payload))});
-      this.setStatus("online");
-    }catch(e){this.setStatus("offline");}
+      const res=await fetch(this.url(),{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body});
+      let j=null; try{ j=await res.json(); }catch(_){}
+      this.setStatus("online"); return j||{ok:true};
+    }catch(e){
+      // คำขอแบบ text/plain ไปถึงเซิร์ฟเวอร์แล้วแม้อ่านผลกลับไม่ได้ (CORS) — ไม่ยิงซ้ำกันข้อมูลซ้ำ
+      this.setStatus(navigator.onLine?"online":"offline"); return {ok:true,unverified:true};
+    }
   },
   upsertAttendance(date,empId,att){return this.push("upsertAttendance",{date,empId,att});},
   setAbsence(date,empId,type){return this.push("setAbsence",{date,empId,type:type||""});},
   saveEmployees(){return this.push("saveEmployees",{employees});},
+  upsertEmployee(emp){return this.push("upsertEmployee",{employee:emp});},
   addCorrection(correction){return this.push("addCorrection",{correction});},
   setLock(month,locked){return this.push("setLock",{month,locked});},
   addAdminLog(entry){return this.push("addAdminLog",{entry});},
@@ -1239,10 +1244,42 @@ const SheetDB={
 };
 function updateDbStatus(){
   const el=document.getElementById("dbStatus");if(!el)return;
-  const map={off:["⚪ ยังไม่เชื่อม Sheet","var(--muted)"],online:["🟢 เชื่อมต่อ Sheet (ฐานข้อมูลหลัก)","var(--green-d)"],
+  const last=SheetDB._last?(" · ซิงก์ "+SheetDB._last):"";
+  const map={off:["⚪ ยังไม่เชื่อม Sheet","var(--muted)"],
+    online:["🟢 เชื่อมต่อ Sheet (ฐานข้อมูลหลัก)"+last,"var(--green-d)"],
     offline:["🔴 ออฟไลน์ — ใช้ข้อมูลในเครื่องชั่วคราว","var(--red-d)"]};
   const[txt,col]=map[SheetDB.status]||map.off;
   el.textContent=txt;el.style.color=col;
+}
+ 
+/* ===== ซิงก์อัตโนมัติ: ดึงข้อมูลล่าสุดจาก Sheet มาแสดงทุกเครื่องให้ตรงกัน ===== */
+let _syncing=false,_lastSig="";
+function markSynced(){const d=new Date();SheetDB._last=pad(d.getHours())+":"+pad(d.getMinutes())+":"+pad(d.getSeconds());updateDbStatus();}
+async function pullQuiet(){
+  if(!SheetDB.enabled()||_syncing)return;
+  // เลี่ยงการดึงระหว่างผู้ใช้กำลังทำงาน (เปิด popup / พิมพ์ / สแกนกล้อง)
+  if(document.querySelector(".scrim.on"))return;
+  const ae=document.activeElement;if(ae&&/INPUT|SELECT|TEXTAREA/.test(ae.tagName))return;
+  if(scanner||kScanner)return;
+  _syncing=true;
+  try{
+    const st=await SheetDB.load();
+    if(st&&st.employees){
+      const sig=JSON.stringify(st);
+      if(sig!==_lastSig){
+        _lastSig=sig;
+        if(st.employees.length)employees=st.employees;
+        records=st.records||{};corrections=st.corrections||[];locks=st.locks||{};adminLog=st.adminLog||[];
+        employees.forEach(e=>{if(!e.defaultShift)e.defaultShift="day";});
+        await Store.set(K_EMP,employees);await Store.set(K_REC,records);
+        await Store.set(K_CORR,corrections);await Store.set(K_LOCK,locks);await Store.set(K_ALOG,adminLog);
+        renderAll();
+        const ks=document.getElementById("kiosk");if(ks&&ks.classList.contains("on")&&kEmp)kResolve(kEmp.id);
+      }
+      markSynced();
+    }
+  }catch(e){SheetDB.setStatus("offline");}
+  _syncing=false;
 }
 /* ดึงข้อมูลจาก Sheet มาแทนที่ในเครื่อง */
 async function dbPull(){
@@ -1257,18 +1294,26 @@ async function dbPull(){
     employees.forEach(e=>{if(!e.defaultShift)e.defaultShift="day";});
     await Store.set(K_EMP,employees);await Store.set(K_REC,records);
     await Store.set(K_CORR,corrections);await Store.set(K_LOCK,locks);await Store.set(K_ALOG,adminLog);
+    _lastSig=JSON.stringify(st);markSynced();
     renderAll();toast("ดึงข้อมูลจาก Sheet สำเร็จ","ok");
   }catch(e){SheetDB.setStatus("offline");toast("ดึงข้อมูลไม่สำเร็จ ตรวจการตั้งค่า/สิทธิ์ Anyone","err");}
 }
-/* ส่งข้อมูลทั้งหมดในเครื่องขึ้น Sheet (sync ครั้งแรก/ย้ายข้อมูล) */
+/* ส่งข้อมูลทั้งหมดในเครื่องขึ้น Sheet (sync ครั้งแรก/ย้ายข้อมูล) + ตรวจสอบผล */
 async function dbPushAll(){
   if(!SheetDB.enabled()){toast("ใส่ Apps Script URL แล้วกดบันทึกก่อน","err");return;}
+  if(!confirm("การส่งทั้งหมดจะเขียนทับข้อมูลใน Sheet ด้วยข้อมูลในเครื่องนี้\nใช้เฉพาะตอนตั้งค่าครั้งแรก หรือเมื่อต้องการให้เครื่องนี้เป็นต้นฉบับ\n\nดำเนินการต่อ?"))return;
   await saveConfig();
   toast("กำลังส่งข้อมูลทั้งหมดขึ้น Sheet...","ok");
   await SheetDB.saveAll();
-  toast(SheetDB.status==="online"?"ส่งข้อมูลขึ้น Sheet แล้ว":"ส่งไม่สำเร็จ ตรวจการตั้งค่า","ok");
+  // ตรวจสอบจริง: ดึงกลับมานับจำนวนพนักงานใน Sheet
+  try{
+    const st=await SheetDB.load();
+    const n=st&&st.employees?st.employees.length:0;
+    if(n>0){_lastSig=JSON.stringify(st);markSynced();toast("ส่งสำเร็จ ✓ มีพนักงาน "+n+" คนใน Sheet แล้ว","ok");}
+    else toast("ส่งแล้วแต่ Sheet ยังว่าง — ตรวจ Deploy ใหม่ + สิทธิ์ Anyone","err");
+  }catch(e){toast("ส่งแล้ว แต่ตรวจสอบกลับไม่ได้ (CORS/สิทธิ์ Anyone)","err");}
 }
-
+ 
 async function pushToSheet(){
   const url=document.getElementById("cfgScript").value.trim();
   if(!/^https?:\/\//.test(url)){toast("ใส่ Apps Script URL ก่อน","err");return;}
@@ -1281,13 +1326,13 @@ async function pushToSheet(){
     toast("ส่งข้อมูลแล้ว — ตรวจสอบใน Google Sheet","ok");
   }catch(e){toast("ส่งไม่สำเร็จ ตรวจการตั้งค่า/เครือข่าย","err");}
 }
-
+ 
 /* ---------- SHEETS (action sheets) ---------- */
 const scrim=document.getElementById("scrim"),sheet=document.getElementById("sheet");
 function openSheet(html){sheet.innerHTML='<div class="grip"></div>'+html;scrim.classList.add("on");}
 function closeSheet(){scrim.classList.remove("on");}
 scrim.addEventListener("click",e=>{if(e.target===scrim)closeSheet();});
-
+ 
 function empSheet(id){
   const e=employees.find(x=>x.id===id);if(!e)return;
   openSheet(`
@@ -1335,7 +1380,7 @@ async function saveEmp(id){
     employees.push({id:newId,name,department:dept,position:pos,machine,defaultShift,active:true});
   }
   await Store.set(K_EMP,employees);
-  SheetDB.saveEmployees();
+  SheetDB.upsertEmployee(id?employees.find(x=>x.id===id):employees[employees.length-1]);
   closeSheet();renderEmpList();renderEmpFilters();renderDash();toast("บันทึกข้อมูลแล้ว","ok");
 }
 function transferSheet(id){
@@ -1343,7 +1388,7 @@ function transferSheet(id){
   openSheet(`<h2>ย้ายแผนก</h2><div class="sd">${esc(e.name)} · ปัจจุบัน ${esc(e.department)}</div>
     <div class="action-list">${DEPTS.map(d=>`<button onclick="doTransfer('${id}','${d}')"><span class="ai">${e.department===d?"●":"○"}</span> ${d}</button>`).join("")}</div>`);
 }
-async function doTransfer(id,d){const e=employees.find(x=>x.id===id);e.department=d;await Store.set(K_EMP,employees);SheetDB.saveEmployees();
+async function doTransfer(id,d){const e=employees.find(x=>x.id===id);e.department=d;await Store.set(K_EMP,employees);SheetDB.upsertEmployee(e);
   closeSheet();renderEmpList();renderDash();toast(e.name+" ย้ายไป "+d,"ok");}
 function machineSheet(id){
   const e=employees.find(x=>x.id===id);
@@ -1353,8 +1398,8 @@ function machineSheet(id){
       <button class="btn btn-amber" style="flex:2" onclick="doMachine('${id}')">บันทึก</button></div>`);
 }
 async function doMachine(id){const e=employees.find(x=>x.id===id);e.machine=document.getElementById("m_val").value.trim()||"—";
-  await Store.set(K_EMP,employees);SheetDB.saveEmployees();closeSheet();renderEmpList();toast("เปลี่ยนเครื่องจักรแล้ว","ok");}
-async function toggleActive(id){const e=employees.find(x=>x.id===id);e.active=!e.active;await Store.set(K_EMP,employees);SheetDB.saveEmployees();
+  await Store.set(K_EMP,employees);SheetDB.upsertEmployee(e);closeSheet();renderEmpList();toast("เปลี่ยนเครื่องจักรแล้ว","ok");}
+async function toggleActive(id){const e=employees.find(x=>x.id===id);e.active=!e.active;await Store.set(K_EMP,employees);SheetDB.upsertEmployee(e);
   closeSheet();renderEmpList();renderEmpFilters();renderDash();toast(e.name+(e.active?" เปิดใช้งาน":" ปิดใช้งานแล้ว"),"ok");}
 function qrSheet(id){
   const e=employees.find(x=>x.id===id);
@@ -1366,7 +1411,7 @@ function qrSheet(id){
   if(typeof QRCode!=="undefined"){new QRCode(box,{text:e.id,width:190,height:190,correctLevel:QRCode.CorrectLevel.M});}
   else box.innerHTML=`<div style="padding:30px;color:var(--muted)">โหลด QR ไม่ได้<br>รหัส: <b>${esc(e.id)}</b></div>`;
 }
-
+ 
 /* ---------- KIOSK MODE ---------- */
 let kScanner=null;
 function enterKiosk(){
@@ -1455,7 +1500,7 @@ function kFlash(name,action,time,color){
   document.getElementById("kResult").innerHTML="";kEmp=null;
   clearTimeout(kFlash._t);kFlash._t=setTimeout(()=>f.classList.remove("on"),2200);
 }
-
+ 
 /* ---------- navigation ---------- */
 function switchScreen(name){
   document.querySelectorAll(".screen").forEach(s=>s.classList.remove("on"));
@@ -1465,7 +1510,7 @@ function switchScreen(name){
   window.scrollTo(0,0);
 }
 function navTo(name){switchScreen(name);}
-
+ 
 /* ===================================================================
    MENU + PASSWORD GATE
    =================================================================== */
@@ -1505,7 +1550,7 @@ function gateAdmin(){
     else{document.getElementById("pwErr").style.display="block";toast("รหัสผ่านไม่ถูกต้อง","err");}
   });
 }
-
+ 
 /* ===================================================================
    ATTENDANCE CORRECTION (§1/§2/§3)
    =================================================================== */
@@ -1560,7 +1605,7 @@ async function saveCorrection(){
   const reasonOther=document.getElementById("corOther").value.trim();
   if(!reason){toast("กรุณาเลือกเหตุผลการแก้ไข","err");return;}              // §2 บังคับเหตุผล
   if(reason==="Other"&&!reasonOther){toast("กรุณาระบุเหตุผล (Other)","err");return;}
-
+ 
   // §8/§9 — ตรวจล็อกงวด ถ้าล็อกต้องเป็น Admin เท่านั้น
   let override=false;
   if(isLocked(date)){
@@ -1603,7 +1648,7 @@ async function commitCorrection(id,date,e,reason,reasonOther,override){
   recalcAll();                                         // §11 รีเฟรชทุกหน้า
   renderCorrectionForm();
 }
-
+ 
 /* ===================================================================
    PAYROLL LOCK MANAGEMENT (§8/§9/§10)
    =================================================================== */
@@ -1641,10 +1686,10 @@ async function toggleLock(mk){
   }
   renderLockScreen(); recalcAll();
 }
-
+ 
 function renderAll(){updateDateLabel();renderDash();renderEmpFilters();renderEmpList();renderAbsence();renderReport();
   if(currentEmp)renderScanResult();}
-
+ 
 /* ---------- events ---------- */
 document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click",()=>switchScreen(t.dataset.screen)));
 document.getElementById("dPrev").onclick=()=>setDate(-1);
@@ -1655,7 +1700,7 @@ document.getElementById("manualGo").onclick=()=>resolveEmp(document.getElementBy
 document.getElementById("manualId").addEventListener("keydown",e=>{if(e.key==="Enter")resolveEmp(e.target.value);});
 document.getElementById("addEmpBtn").onclick=()=>formEmp(null);
 document.getElementById("empSearch").addEventListener("input",e=>{empQuery=e.target.value;renderEmpList();});
-
+ 
 /* menu + enterprise modules */
 document.getElementById("menuBtn").onclick=openMenu;
 document.getElementById("corSave").onclick=saveCorrection;
@@ -1670,7 +1715,7 @@ document.getElementById("rpToday").onclick=()=>{repStart=repEnd=ymd(new Date());
 document.getElementById("rpMonth").onclick=()=>{const n=new Date();repStart=ymd(new Date(n.getFullYear(),n.getMonth(),1));repEnd=ymd(n);renderReport();};
 document.getElementById("rpPrevMonth").onclick=()=>{const n=new Date();const s=new Date(n.getFullYear(),n.getMonth()-1,1);const en=new Date(n.getFullYear(),n.getMonth(),0);repStart=ymd(s);repEnd=ymd(en);renderReport();};
 document.getElementById("histSearch").addEventListener("input",e=>{histQuery=e.target.value;renderHistory();});
-
+ 
 /* export / google sheet */
 document.getElementById("excelBtn").onclick=exportExcel;
 document.getElementById("saveCfgBtn").onclick=async()=>{await saveConfig();updateDbStatus();};
@@ -1679,7 +1724,7 @@ document.getElementById("pushSheetBtn").onclick=pushToSheet;
 document.getElementById("dbPullBtn").onclick=dbPull;
 document.getElementById("dbPushAllBtn").onclick=dbPushAll;
 document.getElementById("howToBtn").onclick=()=>{const h=document.getElementById("howTo");h.style.display=h.style.display==="none"?"block":"none";};
-
+ 
 /* kiosk link controls */
 function kioskLink(){return location.origin+location.pathname+location.search+"#kiosk";}
 document.getElementById("kioskUrl").value=kioskLink();
@@ -1689,14 +1734,14 @@ document.getElementById("copyKioskBtn").onclick=()=>{
   else toast("คัดลอกไม่ได้","err");
 };
 document.getElementById("openKioskBtn").onclick=()=>{history.replaceState(null,"",location.pathname+location.search+"#kiosk");enterKiosk();};
-
+ 
 /* kiosk internal controls */
 document.getElementById("kScanBtn").onclick=kStart;
 document.getElementById("kStopBtn").onclick=kStop;
 document.getElementById("kManualGo").onclick=()=>kResolve(document.getElementById("kManualId").value);
 document.getElementById("kManualId").addEventListener("keydown",e=>{if(e.key==="Enter")kResolve(e.target.value);});
 document.getElementById("kExit").onclick=e=>{e.preventDefault();exitKiosk();};
-
+ 
 /* PWA install + manifest */
 let deferredPrompt=null;
 window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredPrompt=e;document.getElementById("installBtn").style.display="block";});
@@ -1707,7 +1752,7 @@ try{
   const blob=new Blob([JSON.stringify(manifest)],{type:"application/json"});
   const link=document.createElement("link");link.rel="manifest";link.href=URL.createObjectURL(blob);document.head.appendChild(link);
 }catch(e){}
-
+ 
 /* boot */
 (async()=>{
   await load();
@@ -1723,11 +1768,16 @@ try{
         employees.forEach(e=>{if(!e.defaultShift)e.defaultShift="day";});
         await Store.set(K_EMP,employees);await Store.set(K_REC,records);
         await Store.set(K_CORR,corrections);await Store.set(K_LOCK,locks);await Store.set(K_ALOG,adminLog);
+        _lastSig=JSON.stringify(st);markSynced();
       }
     }catch(e){SheetDB.setStatus("offline");}
   }
   updateDbStatus();
   renderAll();
+  // ซิงก์อัตโนมัติทุก 20 วินาที + ตอนสลับกลับมาที่แอป เพื่อให้ทุกเครื่องเห็นข้อมูลตรงกัน
+  setInterval(pullQuiet,20000);
+  document.addEventListener("visibilitychange",()=>{if(!document.hidden)pullQuiet();});
+  window.addEventListener("focus",pullQuiet);
   if(location.hash.toLowerCase().includes("kiosk")||/[?&]kiosk\b/i.test(location.search))enterKiosk();
 })();
 </script>
