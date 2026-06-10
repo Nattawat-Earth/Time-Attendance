@@ -401,7 +401,7 @@ main{flex:1;padding:16px 16px 96px;}
       <div class="valstrip">
         <div class="valcard"><div class="n" id="vActive">0</div><div class="l">พนักงาน Active</div></div>
         <div class="valcard"><div class="n" id="vRec">0</div><div class="l">บันทึกแล้ว</div></div>
-        <div class="valcard miss"><div class="n" id="vMiss">0</div><div class="l">ยังขาด</div></div>
+        <div class="valcard miss"><div class="n" id="vMiss">0</div><div class="l">ยังไม่บันทึก</div></div>
       </div>
  
       <div class="section-t">ยังไม่มีบันทึก</div>
@@ -827,7 +827,7 @@ function renderDash(){
   activeEmps().forEach(e=>{const a=rSh.att[e.id];if(a&&a.in){classifyShift(a.in).key==="day"?dP++:nP++;}});
   document.getElementById("shiftTag").textContent=`กลางวัน ${dP} · กลางคืน ${nP} · Active ${s.total}`;
   const tiles=[
-    ["green","มาทำงาน",s.present],["red","ขาดงาน",s.missing],["amber","ทำ OT",s.ot],
+    ["green","มาทำงาน",s.present],["red","ขาดงาน",s.absCount.abs],["amber","ทำ OT",s.ot],
     ["orange","ลาป่วย",s.absCount.sick],["blue","ลาพักร้อน",s.absCount.vac],["teal","ลากิจ",s.absCount.biz],
   ];
   document.getElementById("dashTiles").innerHTML=tiles.map(([c,l,n])=>
