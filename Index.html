@@ -827,7 +827,7 @@ function renderDash(){
   activeEmps().forEach(e=>{const a=rSh.att[e.id];if(a&&a.in){classifyShift(a.in).key==="day"?dP++:nP++;}});
   document.getElementById("shiftTag").textContent=`กลางวัน ${dP} · กลางคืน ${nP} · Active ${s.total}`;
   const tiles=[
-    ["green","มาทำงาน",s.present],["red","ขาด/ลา",s.totalAbs+s.missing],["amber","ทำ OT",s.ot],
+    ["green","มาทำงาน",s.present],["red","ขาดงาน",s.totalAbs+s.missing],["amber","ทำ OT",s.ot],
     ["orange","ลาป่วย",s.absCount.sick],["blue","ลาพักร้อน",s.absCount.vac],["teal","ลากิจ",s.absCount.biz],
   ];
   document.getElementById("dashTiles").innerHTML=tiles.map(([c,l,n])=>
@@ -839,7 +839,7 @@ function renderDash(){
   document.getElementById("compBar").innerHTML=bar;
  
   document.getElementById("vActive").textContent=s.total;
-  document.getElementById("vRec").textContent=s.present;
+  document.getElementById("vRec").textContent=s.accounted;
   document.getElementById("vMiss").textContent=s.missing;
  
   const r=rec();
