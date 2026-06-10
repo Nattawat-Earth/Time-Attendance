@@ -620,7 +620,21 @@ main{flex:1;padding:16px 16px 96px;}
 
 <script>
 "use strict";
+const API_URL = "https://script.google.com/macros/s/AKfycbxR-oV1NMtpD8j8RxnhNcRYbVCZqnce5Uo92jqdy_bEk7SVvda4vdO-_zoH-W-62wkH/exec";
+async function loadServerData(){
 
+  try{const res = await fetch(API_URL);const data = await res.json();
+    employees = data.employees || [];
+    attendance = data.attendance || [];
+    absence = data.absence || [];
+    console.log("Sync OK");
+    renderAll();
+  }catch(err){
+    console.error(err);
+    toast("โหลดข้อมูลจาก Server ไม่สำเร็จ","err");
+  }
+}
+  
 /* ---------- storage layer (window.storage w/ in-memory fallback) ---------- */
 const Store = {
   async get(k){
