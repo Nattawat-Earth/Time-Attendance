@@ -623,15 +623,11 @@ main{flex:1;padding:16px 16px 96px;}
 
 /* ---------- storage layer (window.storage w/ in-memory fallback) ---------- */
 const Store = {
-  mem:{},
   async get(k){
-    try{ if(window.storage){const r=await window.storage.get(k,false); if(r) return JSON.parse(r.value);} }catch(e){}
-    return (k in this.mem)? this.mem[k]: null;
+    const data = localStorage.getItem(k);return data? JSON.parse(data): null;
   },
-  async set(k,v){
-    this.mem[k]=v;
-    try{ if(window.storage) await window.storage.set(k,JSON.stringify(v),false); }catch(e){}
-  }
+  async set(k,v){console.log("SAVE",k,v);
+    localStorage.setItem(k,JSON.stringify(v));}
 };
 const K_EMP="wf:employees", K_REC="wf:records", K_CFG="wf:config",
       K_CORR="wf:corrections", K_LOCK="wf:locks", K_ALOG="wf:adminlog";
