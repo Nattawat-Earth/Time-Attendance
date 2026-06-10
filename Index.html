@@ -9,6 +9,7 @@
 <title>ShiftBoard · ระบบบันทึกเข้า-ออกงาน</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap');
 
@@ -267,6 +268,31 @@ main{flex:1;padding:16px 16px 96px;}
 
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
 :focus-visible{outline:2px solid var(--amber);outline-offset:2px;}
+
+/* ===== KIOSK MODE ===== */
+#kiosk{position:fixed;inset:0;z-index:100;background:var(--steel-900);color:#fff;display:none;
+  flex-direction:column;max-width:520px;margin:0 auto;overflow-y:auto;}
+#kiosk.on{display:flex;}
+.k-bar{padding:calc(env(safe-area-inset-top) + 16px) 18px 14px;display:flex;align-items:center;gap:11px;border-bottom:1px solid rgba(255,255,255,.07);}
+.k-bar .brand-mark{width:30px;height:30px;}
+.k-bar .t{flex:1;}
+.k-bar .t b{display:block;font-size:15px;letter-spacing:.4px;}
+.k-bar .t span{font-size:11px;color:#8b94a8;letter-spacing:.6px;text-transform:uppercase;}
+.k-clock{font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:600;letter-spacing:1px;}
+.k-body{flex:1;padding:18px;display:flex;flex-direction:column;}
+.k-title{font-size:24px;font-weight:700;margin:4px 0 4px;}
+.k-sub{font-size:13px;color:#8b94a8;margin-bottom:16px;}
+#kReader{width:100%;height:100%;}
+#kReader video{object-fit:cover;}
+.k-foot{padding:14px 18px calc(env(safe-area-inset-bottom) + 16px);text-align:center;}
+.k-foot a{color:#6b7488;font-size:12px;text-decoration:none;border-bottom:1px dotted #4a5266;padding-bottom:1px;}
+.k-flash{position:fixed;inset:0;z-index:110;display:none;flex-direction:column;align-items:center;justify-content:center;
+  max-width:520px;margin:0 auto;text-align:center;padding:30px;}
+.k-flash.on{display:flex;animation:fade .2s;}
+.k-flash .ic{width:96px;height:96px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:50px;margin-bottom:18px;}
+.k-flash .nm{font-size:26px;font-weight:700;color:#fff;}
+.k-flash .ac{font-size:17px;margin-top:6px;}
+.k-flash .tm{font-family:'IBM Plex Mono',monospace;font-size:40px;font-weight:600;color:#fff;margin-top:14px;letter-spacing:2px;}
 </style>
 </head>
 <body>
@@ -367,8 +393,44 @@ main{flex:1;padding:16px 16px 96px;}
       <div class="card" style="padding:6px 16px;margin-bottom:6px;" id="repValidation"></div>
       <div class="section-t">โอที (คำนวณอัตโนมัติ)</div>
       <div class="card" id="otList" style="padding:4px 0;"></div>
-      <div style="margin-top:14px;">
-        <button class="btn btn-line btn-block" id="exportBtn">ส่งออกข้อมูลวันนี้ (JSON)</button>
+
+      <div class="section-t">ส่งออก & เชื่อมต่อ</div>
+      <div class="card" style="padding:14px 16px;">
+        <button class="btn btn-amber btn-block" id="excelBtn" style="margin-bottom:10px;">⤓ ดาวน์โหลด Excel (.xlsx)</button>
+        <div class="field" style="margin-bottom:10px;">
+          <label>ลิงก์ Google Sheet (สำหรับเปิดดู)</label>
+          <input id="cfgSheet" placeholder="https://docs.google.com/spreadsheets/..." autocomplete="off" />
+        </div>
+        <div style="display:flex;gap:9px;margin-bottom:14px;">
+          <button class="btn btn-line" style="flex:1" id="openSheetBtn">เปิด Sheet</button>
+          <button class="btn btn-line" style="flex:1" id="saveCfgBtn">บันทึกลิงก์</button>
+        </div>
+        <div class="field" style="margin-bottom:10px;">
+          <label>Apps Script Web App URL (สำหรับส่งข้อมูลขึ้น Sheet)</label>
+          <input id="cfgScript" placeholder="https://script.google.com/macros/s/.../exec" autocomplete="off" />
+        </div>
+        <button class="btn btn-ghost btn-block" id="pushSheetBtn" style="background:var(--teal);">↥ ส่งข้อมูลวันนี้ขึ้น Google Sheet</button>
+        <button class="linkbtn" id="howToBtn" style="display:block;margin:10px auto 0;">วิธีตั้งค่า Google Sheet ▾</button>
+        <div id="howTo" style="display:none;font-size:12.5px;color:var(--muted);line-height:1.6;background:#f7f8fb;border-radius:10px;padding:12px 13px;margin-top:8px;">
+          1. เปิด Google Sheet ใหม่ → เมนู <b>ส่วนขยาย › Apps Script</b><br>
+          2. วางสคริปต์ <code>doPost(e)</code> ที่รับ JSON แล้วเขียนลงชีต<br>
+          3. กด <b>Deploy › New deployment › Web app</b> ตั้ง Who has access = <i>Anyone</i><br>
+          4. คัดลอก URL ที่ลงท้าย <code>/exec</code> มาวางในช่องด้านบน<br>
+          (โค้ดตัวอย่าง doPost อยู่ในคำอธิบายของแชต)
+        </div>
+      </div>
+
+      <div class="section-t">ลิงก์สำหรับพนักงาน (Kiosk)</div>
+      <div class="card" style="padding:14px 16px;">
+        <p style="margin:0 0 12px;font-size:13px;color:var(--muted);">โหมดสแกนลงเวลาอย่างเดียว — พนักงานจะเห็นแค่หน้าสแกน ไม่เห็นเมนูจัดการ ภาพรวม หรือรายงาน</p>
+        <div class="field mono" style="margin-bottom:10px;">
+          <label>ลิงก์ Kiosk</label>
+          <input id="kioskUrl" readonly value="" />
+        </div>
+        <div style="display:flex;gap:9px;">
+          <button class="btn btn-line" style="flex:1" id="copyKioskBtn">คัดลอกลิงก์</button>
+          <button class="btn btn-amber" style="flex:1" id="openKioskBtn">เปิดโหมด Kiosk</button>
+        </div>
       </div>
     </section>
   </main>
@@ -393,6 +455,33 @@ main{flex:1;padding:16px 16px 96px;}
   </nav>
 </div>
 
+<!-- KIOSK (employee scan-only) -->
+<div id="kiosk">
+  <div class="k-bar">
+    <div class="brand-mark"></div>
+    <div class="t"><b>ShiftBoard</b><span>ลงเวลาทำงาน</span></div>
+    <div class="k-clock" id="kClock">--:--</div>
+  </div>
+  <div class="k-body">
+    <div class="k-title">สแกนเพื่อลงเวลา</div>
+    <div class="k-sub" id="kDate"></div>
+    <div class="terminal" style="padding:0;background:none;box-shadow:none;flex:1;display:flex;flex-direction:column;">
+      <div class="viewfinder" style="aspect-ratio:auto;flex:1;min-height:230px;">
+        <div id="kReader"></div>
+        <div id="kHint" class="vf-hint"><b>เครื่องอ่าน QR</b>แตะปุ่มเพื่อเปิดกล้อง<br>หรือกรอกรหัสพนักงาน</div>
+        <div class="vf-frame" id="kFrame" style="display:none"><span class="vf-c"></span></div>
+      </div>
+      <div class="term-actions"><button class="btn btn-amber btn-block" id="kScanBtn">เปิดกล้องสแกน</button>
+        <button class="btn btn-ghost" id="kStopBtn" style="display:none">หยุด</button></div>
+      <div class="manual"><input id="kManualId" placeholder="กรอกรหัสพนักงาน" autocomplete="off" />
+        <button class="btn btn-amber" id="kManualGo">ค้นหา</button></div>
+    </div>
+    <div id="kResult"></div>
+  </div>
+  <div class="k-foot"><a href="#" id="kExit">เข้าสู่ระบบจัดการ ShiftBoard →</a></div>
+</div>
+<div class="k-flash" id="kFlash"></div>
+
 <!-- SCRIM / SHEET -->
 <div class="scrim" id="scrim"><div class="sheet" id="sheet"></div></div>
 <div id="toast"></div>
@@ -412,7 +501,7 @@ const Store = {
     try{ if(window.storage) await window.storage.set(k,JSON.stringify(v),false); }catch(e){}
   }
 };
-const K_EMP="wf:employees", K_REC="wf:records";
+const K_EMP="wf:employees", K_REC="wf:records", K_CFG="wf:config";
 
 /* ---------- state ---------- */
 let employees=[];
@@ -706,18 +795,66 @@ function renderReport(){
       <div class="hrs">${h.toFixed(1)}<small>${fmtHours(h)}</small></div>
     </div>`;}).join(""):`<div class="empty" style="margin:8px 14px">วันนี้ยังไม่มีการบันทึก OT</div>`;
 }
-function exportData(){
-  const data={date:curDate,employees,record:rec()};
-  const s=JSON.stringify(data,null,2);
-  if(navigator.share){navigator.share({title:"ShiftBoard "+curDate,text:s}).catch(()=>copyText(s));}
-  else copyText(s);
+/* ---------- export rows (ใช้ร่วมกันทั้ง Excel และ Google Sheet) ---------- */
+function buildRows(){
+  const r=rec();const s=stats();
+  const tmap={sick:"ลาป่วย",vac:"ลาพักร้อน",biz:"ลากิจ",abs:"ขาดงาน"};
+  const att=activeEmps().map(e=>{
+    const a=r.att[e.id]||{};const ab=r.abs[e.id];
+    let st=ab?tmap[ab]:(a.in?(a.out?"ออกงานแล้ว":(a.otS&&!a.otE?"กำลังทำ OT":"อยู่ในกะ")):"ยังไม่ลงเวลา");
+    return {รหัส:e.id,ชื่อ:e.name,แผนก:e.department,ตำแหน่ง:e.position,เครื่องจักร:e.machine,
+      เข้างาน:fmtClock(a.in)||"",เริ่มOT:fmtClock(a.otS)||"",จบOT:fmtClock(a.otE)||"",ออกงาน:fmtClock(a.out)||"",
+      "ชั่วโมงOT":otHours(a)?Number(otHours(a).toFixed(2)):0,สถานะ:st};
+  });
+  const summary=[
+    {รายการ:"วันที่",ค่า:curDate},
+    {รายการ:"พนักงาน Active ทั้งหมด",ค่า:s.total},
+    {รายการ:"บันทึกเข้างานแล้ว",ค่า:s.present},
+    {รายการ:"ระบุการลา/ขาด",ค่า:s.totalAbs},
+    {รายการ:"ยังขาดการบันทึก",ค่า:s.missing},
+    {รายการ:"ทำ OT",ค่า:s.ot},
+    {รายการ:"ความครบถ้วน (%)",ค่า:s.comp},
+  ];
+  return {att,summary};
 }
-function copyText(s){
-  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(s).then(()=>toast("คัดลอกข้อมูลแล้ว","ok")).catch(()=>toast("คัดลอกไม่ได้","err"));}
-  else toast("อุปกรณ์ไม่รองรับการคัดลอก","err");
+function exportExcel(){
+  if(typeof XLSX==="undefined"){toast("ไลบรารี Excel โหลดไม่สำเร็จ","err");return;}
+  try{
+    const {att,summary}=buildRows();
+    const wb=XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(summary),"สรุป");
+    XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(att),"ลงเวลา");
+    XLSX.writeFile(wb,"ShiftBoard_"+curDate+".xlsx");
+    toast("ดาวน์โหลดไฟล์ Excel แล้ว","ok");
+  }catch(e){toast("สร้างไฟล์ไม่สำเร็จ","err");}
 }
 
-/* ---------- SHEETS ---------- */
+/* ---------- Google Sheet config ---------- */
+let config={sheetUrl:"",scriptUrl:""};
+async function loadConfig(){const c=await Store.get(K_CFG);if(c)config=c;
+  const a=document.getElementById("cfgSheet"),b=document.getElementById("cfgScript");
+  if(a)a.value=config.sheetUrl||"";if(b)b.value=config.scriptUrl||"";}
+async function saveConfig(){
+  config.sheetUrl=document.getElementById("cfgSheet").value.trim();
+  config.scriptUrl=document.getElementById("cfgScript").value.trim();
+  await Store.set(K_CFG,config);toast("บันทึกลิงก์แล้ว","ok");
+}
+function openGSheet(){const u=document.getElementById("cfgSheet").value.trim();
+  if(!/^https?:\/\//.test(u)){toast("ใส่ลิงก์ Google Sheet ก่อน","err");return;}window.open(u,"_blank","noopener");}
+async function pushToSheet(){
+  const url=document.getElementById("cfgScript").value.trim();
+  if(!/^https?:\/\//.test(url)){toast("ใส่ Apps Script URL ก่อน","err");return;}
+  await saveConfig();
+  const {att,summary}=buildRows();
+  const payload={date:curDate,summary,attendance:att};
+  toast("กำลังส่งข้อมูล...","ok");
+  try{
+    await fetch(url,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(payload)});
+    toast("ส่งข้อมูลแล้ว — ตรวจสอบใน Google Sheet","ok");
+  }catch(e){toast("ส่งไม่สำเร็จ ตรวจการตั้งค่า/เครือข่าย","err");}
+}
+
+/* ---------- SHEETS (action sheets) ---------- */
 const scrim=document.getElementById("scrim"),sheet=document.getElementById("sheet");
 function openSheet(html){sheet.innerHTML='<div class="grip"></div>'+html;scrim.classList.add("on");}
 function closeSheet(){scrim.classList.remove("on");}
@@ -797,6 +934,92 @@ function qrSheet(id){
   else box.innerHTML=`<div style="padding:30px;color:var(--muted)">โหลด QR ไม่ได้<br>รหัส: <b>${esc(e.id)}</b></div>`;
 }
 
+/* ---------- KIOSK MODE ---------- */
+let kScanner=null;
+function enterKiosk(){
+  document.getElementById("kiosk").classList.add("on");
+  document.getElementById("kDate").textContent=thDate(ymd(new Date()));
+  tickClock();
+  if(!enterKiosk._t)enterKiosk._t=setInterval(tickClock,1000);
+}
+function exitKiosk(){
+  document.getElementById("kiosk").classList.remove("on");
+  kStop();
+  if(location.hash.toLowerCase().includes("kiosk"))history.replaceState(null,"",location.pathname+location.search);
+}
+function tickClock(){const d=new Date();document.getElementById("kClock").textContent=pad(d.getHours())+":"+pad(d.getMinutes());}
+function kStart(){
+  if(typeof Html5Qrcode==="undefined"){toast("ตัวอ่าน QR โหลดไม่สำเร็จ","err");return;}
+  document.getElementById("kHint").style.display="none";
+  document.getElementById("kFrame").style.display="block";
+  document.getElementById("kScanBtn").style.display="none";
+  document.getElementById("kStopBtn").style.display="flex";
+  kScanner=new Html5Qrcode("kReader");
+  kScanner.start({facingMode:"environment"},{fps:10,qrbox:200},
+    txt=>kResolve(txt),()=>{}).catch(()=>{toast("เปิดกล้องไม่ได้ — กรอกรหัสด้วยมือ","err");kStop();});
+}
+function kStop(){
+  document.getElementById("kScanBtn").style.display="flex";
+  document.getElementById("kStopBtn").style.display="none";
+  document.getElementById("kFrame").style.display="none";
+  document.getElementById("kHint").style.display="block";
+  if(kScanner){kScanner.stop().then(()=>kScanner.clear()).catch(()=>{});kScanner=null;}
+}
+let kEmp=null;
+function kResolve(id){
+  id=(id||"").trim().toUpperCase();
+  const e=employees.find(x=>x.id.toUpperCase()===id);
+  if(!e){toast("ไม่พบรหัส "+id,"err");return;}
+  if(!e.active){toast(e.name+" สถานะ Inactive","err");return;}
+  kEmp=e;document.getElementById("kManualId").value="";
+  // kiosk always works on today
+  const today=ymd(new Date());if(!records[today])records[today]={att:{},abs:{}};
+  const a=records[today].att[e.id]||{};
+  const has=k=>!!a[k];
+  const acts=[
+    {k:"in",cls:"in",label:"เข้างาน",sub:"Clock In",dis:has("in")},
+    {k:"otS",cls:"ots",label:"เริ่ม OT",sub:"Start OT",dis:!has("in")||has("otS")||has("out")},
+    {k:"otE",cls:"ote",label:"จบ OT",sub:"End OT",dis:!has("otS")||has("otE")},
+    {k:"out",cls:"out",label:"ออกงาน",sub:"Clock Out",dis:!has("in")||has("out")},
+  ];
+  document.getElementById("kResult").innerHTML=`
+    <div class="empcard" style="margin-top:16px">
+      <div class="empcard-top">
+        <div class="avatar">${esc(initials(e.name))}</div>
+        <div style="flex:1;min-width:0">
+          <div class="nm">${esc(e.name)}</div>
+          <div class="meta">${esc(e.position)} · ${esc(e.department)}</div>
+          <div style="margin-top:6px"><span class="eid">${esc(e.id)}</span> &nbsp;<span class="chip machine">⚙ ${esc(e.machine)}</span></div>
+        </div>
+      </div>
+      <div class="panel-actions">
+        ${acts.map(x=>`<button class="pbtn ${x.cls}" ${x.dis?"disabled":""} onclick="kStamp('${x.k}')">${x.label}<small>${x.sub}</small></button>`).join("")}
+      </div>
+    </div>`;
+}
+async function kStamp(key){
+  const e=kEmp;if(!e)return;
+  const today=ymd(new Date());if(!records[today])records[today]={att:{},abs:{}};
+  const R=records[today];if(!R.att[e.id])R.att[e.id]={};
+  const a=R.att[e.id];const now=new Date().toISOString();
+  if(key==="out"&&a.otS&&!a.otE)a.otE=now;
+  a[key]=now;if(R.abs[e.id])delete R.abs[e.id];
+  await Store.set(K_REC,records);
+  const names={in:"เข้างาน",otS:"เริ่ม OT",otE:"จบ OT",out:"ออกงาน"};
+  const cols={in:"var(--green)",otS:"var(--amber)",otE:"var(--steel-700)",out:"var(--red)"};
+  kFlash(e.name,names[key],fmtClock(now),cols[key]);
+  if(curDate===today){renderDash();renderReport();if(currentEmp&&currentEmp.id===e.id)renderScanResult();}
+}
+function kFlash(name,action,time,color){
+  const f=document.getElementById("kFlash");
+  f.style.background=color;
+  f.innerHTML=`<div class="ic" style="background:rgba(255,255,255,.18)">✓</div>
+    <div class="nm">${esc(name)}</div><div class="ac">${action}</div><div class="tm">${time}</div>`;
+  f.classList.add("on");
+  document.getElementById("kResult").innerHTML="";kEmp=null;
+  clearTimeout(kFlash._t);kFlash._t=setTimeout(()=>f.classList.remove("on"),2200);
+}
+
 /* ---------- navigation ---------- */
 function switchScreen(name){
   document.querySelectorAll(".screen").forEach(s=>s.classList.remove("on"));
@@ -818,7 +1041,30 @@ document.getElementById("manualGo").onclick=()=>resolveEmp(document.getElementBy
 document.getElementById("manualId").addEventListener("keydown",e=>{if(e.key==="Enter")resolveEmp(e.target.value);});
 document.getElementById("addEmpBtn").onclick=()=>formEmp(null);
 document.getElementById("empSearch").addEventListener("input",e=>{empQuery=e.target.value;renderEmpList();});
-document.getElementById("exportBtn").onclick=exportData;
+
+/* export / google sheet */
+document.getElementById("excelBtn").onclick=exportExcel;
+document.getElementById("saveCfgBtn").onclick=saveConfig;
+document.getElementById("openSheetBtn").onclick=openGSheet;
+document.getElementById("pushSheetBtn").onclick=pushToSheet;
+document.getElementById("howToBtn").onclick=()=>{const h=document.getElementById("howTo");h.style.display=h.style.display==="none"?"block":"none";};
+
+/* kiosk link controls */
+function kioskLink(){return location.origin+location.pathname+location.search+"#kiosk";}
+document.getElementById("kioskUrl").value=kioskLink();
+document.getElementById("copyKioskBtn").onclick=()=>{
+  const u=kioskLink();
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(u).then(()=>toast("คัดลอกลิงก์ Kiosk แล้ว","ok")).catch(()=>toast("คัดลอกไม่ได้","err"));
+  else toast("คัดลอกไม่ได้","err");
+};
+document.getElementById("openKioskBtn").onclick=()=>{history.replaceState(null,"",location.pathname+location.search+"#kiosk");enterKiosk();};
+
+/* kiosk internal controls */
+document.getElementById("kScanBtn").onclick=kStart;
+document.getElementById("kStopBtn").onclick=kStop;
+document.getElementById("kManualGo").onclick=()=>kResolve(document.getElementById("kManualId").value);
+document.getElementById("kManualId").addEventListener("keydown",e=>{if(e.key==="Enter")kResolve(e.target.value);});
+document.getElementById("kExit").onclick=e=>{e.preventDefault();exitKiosk();};
 
 /* PWA install + manifest */
 let deferredPrompt=null;
@@ -832,7 +1078,12 @@ try{
 }catch(e){}
 
 /* boot */
-(async()=>{await load();renderAll();})();
+(async()=>{
+  await load();
+  await loadConfig();
+  renderAll();
+  if(location.hash.toLowerCase().includes("kiosk")||/[?&]kiosk\b/i.test(location.search))enterKiosk();
+})();
 </script>
 </body>
 </html>
