@@ -1759,6 +1759,9 @@ try{
  
 /* boot */
 (async()=>{
+ if(location.hash.toLowerCase().includes("kiosk")){
+  document.body.style.visibility="hidden";
+}
   await load();
   await loadConfig();
   defaultRange();
@@ -1782,7 +1785,12 @@ try{
   setInterval(pullQuiet,20000);
   document.addEventListener("visibilitychange",()=>{if(!document.hidden)pullQuiet();});
   window.addEventListener("focus",pullQuiet);
-  if(location.hash.toLowerCase().includes("kiosk")||/[?&]kiosk\b/i.test(location.search))enterKiosk();
+
+  if(location.hash.toLowerCase().includes("kiosk")
+     || /[?&]kiosk\b/i.test(location.search)){
+    enterKiosk();
+  }
+  document.body.style.visibility="visible";
 })();
 </script>
 </body>
