@@ -1183,6 +1183,7 @@ async function classify(id,type){
    REPORT — แบบช่วงวันที่ (§4) + สรุปตามกะ (§7) + ประวัติการแก้ไข (§3)
    =================================================================== */
 function aggregate(){
+ const map = {};
   if(!repStart||!repEnd) defaultRange();
   const dates=rangeDates();
   const act=activeEmps();
