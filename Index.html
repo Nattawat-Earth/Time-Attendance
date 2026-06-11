@@ -358,6 +358,87 @@ main{flex:1;padding:16px 16px 96px;}
 .audit-row:first-child{border-top:none;}
 .audit-tag{font-family:'IBM Plex Mono',monospace;font-size:10.5px;font-weight:700;padding:3px 8px;border-radius:6px;background:var(--steel-900);color:#fff;flex:none;}
 .audit-row .when{margin-left:auto;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted-2);}
+
+/* ===== Settings screen ===== */
+.setting-group{background:var(--surface);border-radius:var(--r);box-shadow:var(--shadow);margin-bottom:12px;overflow:hidden;}
+.setting-group-head{padding:13px 16px 0;font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);}
+.setting-row{display:flex;align-items:center;gap:12px;padding:13px 16px;border-top:1px solid var(--line-soft);}
+.setting-row:first-of-type{border-top:none;}
+.setting-row .ico{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex:none;font-size:17px;}
+.setting-row .ico.green{background:#e3f5ea;} .setting-row .ico.blue{background:#dbeafe;}
+.setting-row .ico.amber{background:#fef3c7;} .setting-row .ico.red{background:#fde8e8;}
+.setting-row .ico.teal{background:#ccfbf1;} .setting-row .ico.violet{background:#ede9fe;}
+.setting-row .lbl{flex:1;min-width:0;}
+.setting-row .lbl b{display:block;font-size:14px;font-weight:600;}
+.setting-row .lbl span{font-size:11.5px;color:var(--muted);}
+.setting-row .arr{color:var(--muted-2);font-size:18px;}
+.db-pill{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:20px;}
+.db-pill.online{background:#e3f5ea;color:var(--green-d);}
+.db-pill.offline{background:#fde8e8;color:var(--red-d);}
+.db-pill.off{background:#eceef2;color:var(--muted);}
+
+/* ===== OT Request / Approval ===== */
+.ot-req-card{background:var(--surface);border-radius:var(--r);box-shadow:var(--shadow);padding:14px 16px;margin-bottom:10px;}
+.ot-req-card .top{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+.ot-req-card .av{width:40px;height:40px;border-radius:12px;background:var(--steel-800);color:#fff;font-family:'Barlow Condensed';font-weight:700;font-size:16px;display:flex;align-items:center;justify-content:center;flex:none;}
+.ot-req-card .info{flex:1;min-width:0;}
+.ot-req-card .nm{font-weight:700;font-size:15px;}
+.ot-req-card .meta{font-size:12px;color:var(--muted);font-family:'IBM Plex Mono';}
+.ot-status{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;}
+.ot-status.pending{background:#fef3c7;color:#92400e;}
+.ot-status.approved{background:#e3f5ea;color:var(--green-d);}
+.ot-status.rejected{background:#fde8e8;color:var(--red-d);}
+.ot-req-card .hours-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line-soft);}
+.ot-req-card .hours-row .big{font-family:'Barlow Condensed';font-weight:700;font-size:28px;color:var(--amber-d);line-height:1;}
+.ot-req-card .hours-row .big small{font-family:'IBM Plex Sans Thai';font-size:11px;color:var(--muted);font-weight:500;display:block;}
+.ot-approve-input{display:flex;align-items:center;gap:8px;flex:1;}
+.ot-approve-input input{width:80px;padding:8px 10px;border:1.5px solid var(--line);border-radius:9px;font-size:15px;font-family:'Barlow Condensed';font-weight:600;text-align:center;}
+.ot-approve-input input:focus{outline:none;border-color:var(--amber);}
+.ot-req-card .actions{display:flex;gap:8px;margin-top:10px;}
+.btn-approve{background:var(--green);color:#fff;border:none;border-radius:10px;padding:10px 0;flex:1;font-family:inherit;font-weight:700;font-size:13.5px;cursor:pointer;}
+.btn-reject{background:#f7f0f0;color:var(--red-d);border:none;border-radius:10px;padding:10px 0;flex:1;font-family:inherit;font-weight:700;font-size:13.5px;cursor:pointer;}
+.btn-approve:active{background:var(--green-d);} .btn-reject:active{background:#fde8e8;}
+
+/* ===== Employee Stats ===== */
+.emp-stat-header{background:var(--steel-900);border-radius:var(--r);padding:16px;color:#fff;margin-bottom:12px;}
+.emp-stat-header .nm{font-size:18px;font-weight:700;margin-bottom:2px;}
+.emp-stat-header .sub{font-size:12px;color:#9aa6bd;}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px;}
+.stat-box{background:var(--surface);border-radius:var(--r-sm);box-shadow:var(--shadow);padding:12px;text-align:center;}
+.stat-box .n{font-family:'Barlow Condensed';font-size:28px;font-weight:700;line-height:1;}
+.stat-box .l{font-size:11px;color:var(--muted);margin-top:3px;}
+.stat-box.late .n{color:var(--red-d);}
+.stat-box.ot .n{color:var(--amber-d);}
+.stat-box.present .n{color:var(--green-d);}
+.filter-pills{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;}
+.fpill{background:var(--surface);border:1.5px solid var(--line);border-radius:20px;padding:5px 12px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit;}
+.fpill.on{background:var(--steel-900);color:#fff;border-color:var(--steel-900);}
+.ot-week-row{display:flex;align-items:center;gap:10px;padding:10px 14px;border-top:1px solid var(--line-soft);font-size:13px;}
+.ot-week-row:first-child{border-top:none;}
+.ot-week-row .wlabel{flex:1;color:var(--muted);}
+.ot-week-row .wval{font-family:'Barlow Condensed';font-size:17px;font-weight:700;color:var(--amber-d);}
+
+/* ===== Coverage Dashboard ===== */
+.cov-date-row{background:var(--surface);border-radius:var(--r);box-shadow:var(--shadow);padding:12px 16px;margin-bottom:10px;}
+.cov-date-label{font-weight:700;font-size:14px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;}
+.cov-shifts{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.cov-card{border-radius:var(--r-sm);padding:11px 13px;position:relative;overflow:hidden;}
+.cov-card.day{background:#fef9ec;border:1px solid #fde68a;}
+.cov-card.night{background:#ede9fe;border:1px solid #c4b5fd;}
+.cov-card .shift-name{font-size:10.5px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px;}
+.cov-card.day .shift-name{color:var(--amber-d);}
+.cov-card.night .shift-name{color:var(--violet);}
+.cov-bar{height:6px;border-radius:3px;background:rgba(0,0,0,.08);margin:8px 0 6px;overflow:hidden;}
+.cov-bar-fill{height:100%;border-radius:3px;transition:width .4s ease;}
+.cov-bar-fill.green{background:var(--green);}
+.cov-bar-fill.yellow{background:var(--amber);}
+.cov-bar-fill.red{background:var(--red);}
+.cov-nums{display:flex;justify-content:space-between;font-size:12px;}
+.cov-pct{font-family:'Barlow Condensed';font-size:22px;font-weight:700;line-height:1;}
+.cov-pct.green{color:var(--green-d);} .cov-pct.yellow{color:var(--amber-d);} .cov-pct.red{color:var(--red-d);}
+.cov-req-row{display:flex;align-items:center;gap:8px;padding:10px 16px;border-top:1px solid var(--line-soft);font-size:13px;}
+.cov-req-input{width:56px;padding:6px 8px;border:1.5px solid var(--line);border-radius:8px;font-size:14px;font-family:'Barlow Condensed';font-weight:700;text-align:center;}
+.cov-req-input:focus{outline:none;border-color:var(--amber);}
 </style>
 </head>
 <body>
@@ -401,7 +482,7 @@ main{flex:1;padding:16px 16px 96px;}
       <div class="valstrip">
         <div class="valcard"><div class="n" id="vActive">0</div><div class="l">พนักงาน Active</div></div>
         <div class="valcard"><div class="n" id="vRec">0</div><div class="l">บันทึกแล้ว</div></div>
-        <div class="valcard miss"><div class="n" id="vMiss">0</div><div class="l">ยังไม่บันทึก</div></div>
+        <div class="valcard miss"><div class="n" id="vMiss">0</div><div class="l">ยังขาด</div></div>
       </div>
  
       <div class="section-t">ยังไม่มีบันทึก</div>
@@ -480,48 +561,172 @@ main{flex:1;padding:16px 16px 96px;}
         <input id="histSearch" placeholder="ค้นหาชื่อ / รหัส / เหตุผล" autocomplete="off" />
       </div>
       <div class="card" id="histList" style="padding:4px 0;"></div>
- 
-      <div class="section-t">ส่งออก & เชื่อมต่อ</div>
-      <div class="card" style="padding:14px 16px;">
-        <button class="btn btn-amber btn-block" id="excelBtn" style="margin-bottom:10px;">⤓ ดาวน์โหลด Excel ตามช่วงที่เลือก (.xlsx)</button>
-        <div class="field" style="margin-bottom:10px;">
-          <label>ลิงก์ Google Sheet (สำหรับเปิดดู)</label>
-          <input id="cfgSheet" placeholder="https://docs.google.com/spreadsheets/..." autocomplete="off" />
-        </div>
-        <div style="display:flex;gap:9px;margin-bottom:14px;">
-          <button class="btn btn-line" style="flex:1" id="openSheetBtn">เปิด Sheet</button>
-          <button class="btn btn-line" style="flex:1" id="saveCfgBtn">บันทึกลิงก์</button>
-        </div>
-        <div class="field" style="margin-bottom:10px;">
-          <label>Apps Script Web App URL (https://script.google.com/macros/s/AKfycbxT3ER_d6Y3X7HR-aFzh6-USyMK5b6LuO901E5gf6TrzwYawiRdMeIdBHeBm055etNd/exec)</label>
-          <input id="cfgScript" placeholder="https://script.google.com/macros/s/.../exec" autocomplete="off" />
-        </div>
-        <div id="dbStatus" style="font-size:12.5px;font-weight:600;margin:0 2px 10px;color:var(--muted);">⚪ ยังไม่เชื่อม Sheet</div>
-        <div style="display:flex;gap:9px;margin-bottom:10px;">
-          <button class="btn btn-line" style="flex:1" id="dbPullBtn">⟳ ดึงจาก Sheet</button>
-          <button class="btn btn-amber" style="flex:1" id="dbPushAllBtn">⤒ ส่งทั้งหมดขึ้น Sheet</button>
-        </div>
-        <button class="btn btn-ghost btn-block" id="pushSheetBtn" style="background:var(--teal);">↥ ส่ง snapshot รายงานตามช่วง (ตัวเลือกเสริม)</button>
-        <button class="linkbtn" id="howToBtn" style="display:block;margin:10px auto 0;">วิธีตั้งค่า Google Sheet เป็นฐานข้อมูล ▾</button>
-        <div id="howTo" style="display:none;font-size:12.5px;color:var(--muted);line-height:1.6;background:#f7f8fb;border-radius:10px;padding:12px 13px;margin-top:8px;">
-          1. เปิด Google Sheet ใหม่ → เมนู <b>Extensions › Apps Script</b><br>
-          2. วางโค้ดไฟล์ <code>Code.gs</code> (ผมแนบให้ในแชต) ทับทั้งหมด แล้วบันทึก<br>
-          3. กด <b>Deploy › New deployment › Web app</b> · Execute as = <i>Me</i> · Who has access = <i>Anyone</i><br>
-          4. คัดลอก URL ที่ลงท้าย <code>/exec</code> มาวางช่องด้านบน แล้วกด <b>บันทึกลิงก์</b><br>
-          5. กด <b>ส่งทั้งหมดขึ้น Sheet</b> 1 ครั้งเพื่อเริ่มต้นฐานข้อมูล จากนั้นทุกการเปลี่ยนแปลงจะบันทึกขึ้น Sheet อัตโนมัติ
+    </section>
+
+    <!-- ===== OT APPROVAL ===== -->
+    <section class="screen" id="screen-otapprove">
+      <div class="scr-head"><h1>อนุมัติ OT</h1><span class="sub" id="otApproveSub"></span></div>
+      <div style="display:flex;gap:6px;margin-bottom:10px;">
+        <button class="fchip on" id="otTabPending" onclick="setOtTab('pending')">รอดำเนินการ</button>
+        <button class="fchip" id="otTabApproved" onclick="setOtTab('approved')">อนุมัติแล้ว</button>
+        <button class="fchip" id="otTabRejected" onclick="setOtTab('rejected')">ปฏิเสธแล้ว</button>
+      </div>
+      <div id="otApproveList"></div>
+    </section>
+
+    <!-- ===== EMPLOYEE STATS (sub-screen) ===== -->
+    <section class="screen" id="screen-empstat">
+      <div class="scr-back">
+        <button onclick="navTo('emp')">‹</button>
+        <div><h1>สถิติพนักงาน</h1><div class="sub" id="empStatName"></div></div>
+      </div>
+      <div class="emp-stat-header" id="empStatHeader"></div>
+      <div class="filter-pills">
+        <button class="fpill on" onclick="setStatFilter('week')">สัปดาห์นี้</button>
+        <button class="fpill" onclick="setStatFilter('month')">เดือนนี้</button>
+        <button class="fpill" onclick="setStatFilter('custom')">กำหนดเอง</button>
+      </div>
+      <div id="empStatCustomRange" style="display:none;">
+        <div class="range-row" style="margin-bottom:8px;">
+          <div class="field"><label>ตั้งแต่</label><input type="date" id="statStart"/></div>
+          <div class="field"><label>ถึง</label><input type="date" id="statEnd"/></div>
         </div>
       </div>
- 
-      <div class="section-t">ลิงก์สำหรับพนักงาน (Kiosk)</div>
-      <div class="card" style="padding:14px 16px;">
-        <p style="margin:0 0 12px;font-size:13px;color:var(--muted);">โหมดสแกนลงเวลาอย่างเดียว — พนักงานจะเห็นแค่หน้าสแกน ไม่เห็นเมนูจัดการ ภาพรวม หรือรายงาน</p>
-        <div class="field mono" style="margin-bottom:10px;">
-          <label>ลิงก์ Kiosk</label>
-          <input id="kioskUrl" readonly value="" />
+      <div class="stat-grid" id="statGrid"></div>
+      <div class="section-t">สรุป OT รายสัปดาห์</div>
+      <div class="card" id="statOtWeek" style="padding:4px 0;"></div>
+      <div class="section-t">รายละเอียดการเข้างาน</div>
+      <div class="card" id="statAttList" style="padding:4px 0;"></div>
+    </section>
+
+    <!-- ===== SHIFT COVERAGE ===== -->
+    <section class="screen" id="screen-coverage">
+      <div class="scr-back">
+        <button onclick="navTo('dash')">‹</button>
+        <div><h1>Shift Coverage</h1><div class="sub">การครอบคลุมกำลังคน</div></div>
+      </div>
+      <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;">
+        <button class="fchip on" id="covTabDay" onclick="setCovTab('day')">วันนี้</button>
+        <button class="fchip" id="covTabWeek" onclick="setCovTab('week')">สัปดาห์นี้</button>
+        <button class="fchip" id="covTabMonth" onclick="setCovTab('month')">เดือนนี้</button>
+      </div>
+      <div class="card" style="padding:13px 16px;margin-bottom:10px;">
+        <div style="font-size:12px;color:var(--muted);margin-bottom:8px;font-weight:600;">กำหนดกำลังคนที่ต้องการ</div>
+        <div class="cov-req-row">
+          <span style="flex:1;font-weight:600;">🌤 กะกลางวัน</span>
+          <input class="cov-req-input" id="reqDay" type="number" min="1" value="10"/>
+          <span style="font-size:12px;color:var(--muted);">คน</span>
         </div>
-        <div style="display:flex;gap:9px;">
-          <button class="btn btn-line" style="flex:1" id="copyKioskBtn">คัดลอกลิงก์</button>
-          <button class="btn btn-amber" style="flex:1" id="openKioskBtn">เปิดโหมด Kiosk</button>
+        <div class="cov-req-row">
+          <span style="flex:1;font-weight:600;">🌙 กะกลางคืน</span>
+          <input class="cov-req-input" id="reqNight" type="number" min="1" value="8"/>
+          <span style="font-size:12px;color:var(--muted);">คน</span>
+        </div>
+      </div>
+      <div id="covList"></div>
+    </section>
+
+    <!-- ===== SETTINGS ===== -->
+    <section class="screen" id="screen-settings">
+      <div class="scr-head"><h1>ตั้งค่า</h1><span class="sub">Settings</span></div>
+
+      <div class="setting-group">
+        <div class="setting-group-head">สถานะการเชื่อมต่อ</div>
+        <div class="setting-row" style="border-top:none;">
+          <div class="ico green">🗄️</div>
+          <div class="lbl"><b>Google Sheet Database</b><span id="settingDbStatus">กำลังตรวจสอบ...</span></div>
+          <div id="settingDbPill" class="db-pill off">⚪ ไม่ทราบ</div>
+        </div>
+      </div>
+
+      <div class="setting-group">
+        <div class="setting-group-head">ลิงก์ภายนอก</div>
+        <div class="setting-row" style="border-top:none;">
+          <div class="ico green">📊</div>
+          <div class="lbl"><b>Google Sheet URL</b><span>สำหรับเปิดดูข้อมูลใน Sheet</span></div>
+        </div>
+        <div style="padding:0 16px 12px;">
+          <input id="cfgSheet" class="field" style="width:100%;padding:9px 12px;border:1.5px solid var(--line);border-radius:9px;font-size:13px;font-family:inherit;" placeholder="https://docs.google.com/spreadsheets/..." autocomplete="off"/>
+        </div>
+        <div class="setting-row">
+          <div class="ico blue">⚙️</div>
+          <div class="lbl"><b>Apps Script Web App URL</b><span>ฐานข้อมูลหลัก (sync อัตโนมัติ)</span></div>
+        </div>
+        <div style="padding:0 16px 12px;">
+          <input id="cfgScript" style="width:100%;padding:9px 12px;border:1.5px solid var(--line);border-radius:9px;font-size:13px;font-family:inherit;" placeholder="https://script.google.com/macros/s/.../exec" autocomplete="off"/>
+        </div>
+        <div style="padding:0 16px 14px;display:flex;gap:8px;">
+          <button class="btn btn-line" style="flex:1" id="openSheetBtn">🔗 เปิด Sheet</button>
+          <button class="btn btn-amber" style="flex:1" id="saveCfgBtn">บันทึกลิงก์</button>
+        </div>
+      </div>
+
+      <div class="setting-group">
+        <div class="setting-group-head">ซิงก์ข้อมูล</div>
+        <div style="padding:12px 16px;display:flex;gap:8px;">
+          <button class="btn btn-line" style="flex:1" id="dbPullBtn">⟳ ดึงจาก Sheet</button>
+          <button class="btn btn-amber" style="flex:1" id="dbPushAllBtn">⤒ ส่งทั้งหมด</button>
+        </div>
+        <div style="padding:0 16px 12px;">
+          <button class="btn btn-ghost btn-block" id="pushSheetBtn" style="background:var(--teal);">↥ ส่ง snapshot รายงาน</button>
+        </div>
+      </div>
+
+      <div class="setting-group">
+        <div class="setting-group-head">ลิงก์สำหรับพนักงาน</div>
+        <div class="setting-row" style="border-top:none;">
+          <div class="ico amber">📱</div>
+          <div class="lbl"><b>Kiosk Mode</b><span>พนักงานสแกนลงเวลาอย่างเดียว</span></div>
+        </div>
+        <div style="padding:0 16px 8px;">
+          <input id="kioskUrl" readonly style="width:100%;padding:9px 12px;border:1.5px solid var(--line);border-radius:9px;font-size:12px;font-family:'IBM Plex Mono';background:#f7f8fb;color:var(--muted);" value=""/>
+        </div>
+        <div style="padding:0 16px 14px;display:flex;gap:8px;">
+          <button class="btn btn-line" style="flex:1" id="copyKioskBtn">คัดลอก</button>
+          <button class="btn btn-amber" style="flex:1" id="openKioskBtn">เปิด Kiosk</button>
+        </div>
+      </div>
+
+      <div class="setting-group">
+        <div class="setting-group-head">ส่งออกข้อมูล</div>
+        <div style="padding:12px 16px 14px;display:flex;gap:8px;">
+          <button class="btn btn-amber btn-block" id="excelBtn">⤓ ดาวน์โหลด Excel (.xlsx)</button>
+        </div>
+      </div>
+
+      <div class="setting-group">
+        <div class="setting-group-head">จัดการระบบ (Admin)</div>
+        <div class="setting-row" style="border-top:none;cursor:pointer;" onclick="navTo('emp')">
+          <div class="ico teal">👥</div>
+          <div class="lbl"><b>จัดการพนักงาน</b><span>เพิ่ม / แก้ไข / โอนย้าย</span></div>
+          <div class="arr">›</div>
+        </div>
+        <div class="setting-row" style="cursor:pointer;" onclick="navTo('absence')">
+          <div class="ico orange">📋</div>
+          <div class="lbl"><b>จัดการขาดงาน</b><span>ระบุประเภทการลา</span></div>
+          <div class="arr">›</div>
+        </div>
+        <div class="setting-row" style="cursor:pointer;" onclick="openMenu()">
+          <div class="ico violet">🔐</div>
+          <div class="lbl"><b>Payroll Lock & Correction</b><span>ล็อกงวด / แก้ไขเวลา</span></div>
+          <div class="arr">›</div>
+        </div>
+        <div class="setting-row" style="cursor:pointer;" onclick="navTo('coverage')">
+          <div class="ico blue">📈</div>
+          <div class="lbl"><b>Shift Coverage</b><span>วางแผนและติดตามกำลังคน</span></div>
+          <div class="arr">›</div>
+        </div>
+      </div>
+
+      <div class="setting-group">
+        <div class="setting-group-head">วิธีตั้งค่า Google Sheet</div>
+        <div style="padding:12px 16px 14px;font-size:12.5px;color:var(--muted);line-height:1.7;">
+          1. เปิด Google Sheet ใหม่ → <b>Extensions › Apps Script</b><br>
+          2. วางโค้ด <code>Code.gs</code> ทับทั้งหมด แล้วบันทึก<br>
+          3. <b>Deploy › New deployment › Web app</b><br>
+             &nbsp;&nbsp;Execute as = <i>Me</i> · Who has access = <i>Anyone</i><br>
+          4. คัดลอก URL ลงท้าย <code>/exec</code> วางช่อง Apps Script URL<br>
+          5. กด <b>บันทึกลิงก์</b> แล้ว <b>ส่งทั้งหมด</b> เพื่อเริ่มต้นฐานข้อมูล
         </div>
       </div>
     </section>
@@ -580,15 +785,15 @@ main{flex:1;padding:16px 16px 96px;}
     <button class="tab" data-screen="scan">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"/><path d="M4 12h16"/></svg>
       สแกน</button>
-    <button class="tab" data-screen="emp">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.3 3.1-6 7-6s7 2.7 7 6"/></svg>
-      พนักงาน</button>
-    <button class="tab" data-screen="absence">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.5" y="5" width="17" height="16" rx="2"/><path d="M3.5 9h17M8 3v4M16 3v4"/><path d="m9.5 14 1.8 1.8L15 12"/></svg>
-      ขาดงาน</button>
+    <button class="tab" data-screen="otapprove">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 12l2 2 4-4"/><rect x="3" y="3" width="18" height="18" rx="3"/></svg>
+      อนุมัติ OT</button>
     <button class="tab" data-screen="report">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 3h12a1 1 0 0 1 1 1v16l-3-2-2 2-2-2-2 2-2-2-3 2V4a1 1 0 0 1 1-1Z"/><path d="M9 8h6M9 12h6"/></svg>
       รายงาน</button>
+    <button class="tab" data-screen="settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>
+      ตั้งค่า</button>
   </nav>
 </div>
  
@@ -635,7 +840,8 @@ const Store = {
     localStorage.setItem(k,JSON.stringify(v));}
 };
 const K_EMP="wf:employees", K_REC="wf:records", K_CFG="wf:config",
-      K_CORR="wf:corrections", K_LOCK="wf:locks", K_ALOG="wf:adminlog";
+      K_CORR="wf:corrections", K_LOCK="wf:locks", K_ALOG="wf:adminlog",
+      K_OT="wf:otrequests", K_COV="wf:coverage";
  
 /* ---------- state ---------- */
 let employees=[];
@@ -649,6 +855,10 @@ let scanner=null, currentEmp=null;
 let repStart=null, repEnd=null;        // ช่วงวันที่ของรายงาน
 let leaderUnlocked=false, adminUnlocked=false;  // สิทธิ์ในเซสชันนี้ (ไม่บันทึกถาวร)
 let histQuery="";
+let otRequests=[];   // [{id,empId,empName,dept,date,requestedAt,shift,clockIn,status,approvedHours,note}]
+let coverage={};     // { 'YYYY-MM-DD': {reqDay:N, reqNight:N} }
+let _otTab="pending", _covTab="day", _statEmpId=null, _statFilter="week";
+let _statStart=null, _statEnd=null;
  
 /* ---------- credentials (ฝั่ง client = ด่านกันพลาดภายในเท่านั้น ไม่ใช่ security จริง) ---------- */
 const LEADER_PW="basketball11", ADMIN_PW="Nantana2026";
@@ -733,7 +943,7 @@ async function persistAdminLog(){ await Store.set(K_ALOG,adminLog); }
  
 /* §11 — recalc/refresh ทุกหน้าหลังข้อมูลเปลี่ยน (ไม่ต้องรีเฟรชเอง) */
 function recalcAll(){
-  renderDash(); renderAbsence(); renderReport();
+  renderDash(); renderAbsence(); renderReport(); renderOtApprove();
   if(currentEmp) renderScanResult();
   if(document.getElementById("screen-correct").classList.contains("on")) renderCorrectionForm();
   if(document.getElementById("screen-lock").classList.contains("on")) renderLockScreen();
@@ -793,6 +1003,8 @@ async function load(){
   }
   // ความเข้ากันได้ย้อนหลัง: พนักงานที่ยังไม่มี defaultShift ให้เป็นกะกลางวัน
   employees.forEach(e=>{ if(!e.defaultShift) e.defaultShift="day"; });
+  otRequests=await Store.get(K_OT)||[];
+  coverage=await Store.get(K_COV)||{};
 }
  
 /* ---------- date nav ---------- */
@@ -876,15 +1088,15 @@ function renderScanResult(){
   else if(has("in")){statusTxt="อยู่ในกะ";statusColor="var(--green)";}
   else{statusTxt="ยังไม่ลงเวลา";statusColor="var(--muted-2)";}
  
+  const otReq=otRequests.find(r=>r.empId===e.id&&r.date===curDate);
+  const otStatus=otReq?otReq.status:null;
   const acts=[
     {k:"in",cls:"in",label:"เข้างาน",sub:"Clock In",dis:has("in")},
-    {k:"otS",cls:"ots",label:"เริ่ม OT",sub:"Start OT",dis:!has("in")||has("otS")||has("out")},
-    {k:"otE",cls:"ote",label:"จบ OT",sub:"End OT",dis:!has("otS")||has("otE")},
+    {k:"otS",cls:"ots",label:"ขออนุมัติ OT",sub:"Request OT",dis:!has("in")||!!otReq||has("out"),special:"ot"},
     {k:"out",cls:"out",label:"ออกงาน",sub:"Clock Out",dis:!has("in")||has("out")},
   ];
   const tl=[
-    ["in","เข้างาน","var(--green)"],["otS","เริ่ม OT","var(--amber)"],
-    ["otE","จบ OT","var(--steel-700)"],["out","ออกงาน","var(--red)"],
+    ["in","เข้างาน","var(--green)"],["out","ออกงาน","var(--red)"],
   ];
   document.getElementById("scanResult").innerHTML=`
   <div class="empcard">
@@ -898,8 +1110,12 @@ function renderScanResult(){
     </div>
     <div class="statusbar"><span class="dot" style="background:${statusColor}"></span><b>${statusTxt}</b>
       ${has("in")?`<span style="margin-left:auto;font-size:11.5px;color:var(--muted)">${sh.label} · ${fmtClock(a.in)} เข้างาน · OT หลัง ${sh.otFrom}</span>`:(otHours(a)>0?`<span style="margin-left:auto;color:var(--amber-d);font-weight:600">OT ${fmtHours(otHours(a))}</span>`:"")}</div>
+    ${otReq?`<div style="padding:8px 14px 0;"><span class="ot-status ${otStatus}">${{pending:'⏳ รอการอนุมัติ OT',approved:'✅ OT อนุมัติแล้ว '+fmtHM(otReq.approvedHours*60),rejected:'❌ OT ไม่อนุมัติ'}[otStatus]||''}</span></div>`:''}
     <div class="panel-actions">
-      ${acts.map(x=>`<button class="pbtn ${x.cls}" ${x.dis?"disabled":""} onclick="stamp('${x.k}')">${x.label}<small>${x.sub}</small></button>`).join("")}
+      ${acts.map(x=>{
+        if(x.special==='ot'&&otReq) return '';
+        return `<button class="pbtn ${x.cls}" ${x.dis?'disabled':''} onclick="${x.special==='ot'?'requestOT()':'stamp(\''+x.k+'\')' }">${x.label}<small>${x.sub}</small></button>`;
+      }).join("")}
     </div>
     <div class="timeline">
       ${tl.map(([k,l,c])=>`<div class="tl-row"><span class="tl-ic" style="background:${c}">●</span><span>${l}</span>
@@ -1190,8 +1406,15 @@ function exportExcel(){
 }
  
 /* ---------- Google Sheet config ---------- */
+/* ====================================================================
+   URL ฐานข้อมูลกลาง (ฝังในไฟล์ — ทุกเครื่องที่เปิดจะเชื่อมอัตโนมัติทันที)
+   ★ ถ้าเปลี่ยน Deployment ใหม่ ให้แก้ URL บรรทัดล่างนี้บรรทัดเดียว แล้วส่งไฟล์ใหม่
+   ==================================================================== */
+const DB_URL="https://script.google.com/macros/s/AKfycbxT3ER_d6Y3X7HR-aFzh6-USyMK5b6LuO901E5gf6TrzwYawiRdMeIdBHeBm055etNd/exec";
+
 let config={sheetUrl:"",scriptUrl:""};
 async function loadConfig(){const c=await Store.get(K_CFG);if(c)config=c;
+  if(!config.scriptUrl)config.scriptUrl=DB_URL;          // เครื่องใหม่ใช้ URL ที่ฝังไว้เลย
   const a=document.getElementById("cfgSheet"),b=document.getElementById("cfgScript");
   if(a)a.value=config.sheetUrl||"";if(b)b.value=config.scriptUrl||"";}
 async function saveConfig(){
@@ -1240,7 +1463,7 @@ const SheetDB={
   addCorrection(correction){return this.push("addCorrection",{correction});},
   setLock(month,locked){return this.push("setLock",{month,locked});},
   addAdminLog(entry){return this.push("addAdminLog",{entry});},
-  saveAll(){return this.push("saveAll",{state:{employees,records,corrections,locks,adminLog}});},
+  saveAll(){return this.push("saveAll",{state:{employees,records,corrections,locks,adminLog,otRequests}});},
 };
 function updateDbStatus(){
   const el=document.getElementById("dbStatus");if(!el)return;
@@ -1342,6 +1565,7 @@ function empSheet(id){
         <div class="sd" style="margin:2px 0 0"><span class="mono">${esc(e.id)}</span> · ${esc(e.position)} · ${esc(e.department)}</div></div>
     </div>
     <div class="action-list">
+      <button onclick="closeSheet();openEmpStat('${e.id}')"><span class="ai">📊</span> ดูสถิติ & ประวัติ</button>
       <button onclick="closeSheet();formEmp('${e.id}')"><span class="ai">✏️</span> แก้ไขข้อมูล</button>
       <button onclick="closeSheet();transferSheet('${e.id}')"><span class="ai">🔀</span> ย้ายแผนก</button>
       <button onclick="closeSheet();machineSheet('${e.id}')"><span class="ai">⚙️</span> เปลี่ยนเครื่องจักร</button>
@@ -1514,6 +1738,222 @@ function switchScreen(name){
   window.scrollTo(0,0);
 }
 function navTo(name){switchScreen(name);}
+
+/* ===================================================================
+   OT REQUEST & APPROVAL
+   =================================================================== */
+async function requestOT(){
+  const e=currentEmp; if(!e)return;
+  if(isLocked(curDate)&&!adminUnlocked){toast("Payroll Period Locked","err");return;}
+  const a=(rec().att[e.id])||{};
+  if(!a.in){toast("ต้องลงเวลาเข้างานก่อน","err");return;}
+  const exists=otRequests.find(r=>r.empId===e.id&&r.date===curDate);
+  if(exists){toast("มีคำขอ OT อยู่แล้วในวันนี้","err");return;}
+  const sh=shiftOf(a,e);
+  const req={id:"OT-"+Date.now(),empId:e.id,empName:e.name,dept:e.department,
+    date:curDate,requestedAt:new Date().toISOString(),shift:sh.key,clockIn:a.in,
+    status:"pending",approvedHours:0,note:""};
+  otRequests.unshift(req);
+  await Store.set(K_OT,otRequests);
+  SheetDB.push("saveOtRequests",{otRequests});
+  toast(e.name+" · ส่งคำขอ OT แล้ว — รอการอนุมัติ","ok");
+  renderScanResult();renderDash();renderOtApprove();
+}
+async function approveOT(id,hours){
+  const req=otRequests.find(r=>r.id===id); if(!req)return;
+  if(!hours||hours<=0){toast("ระบุชั่วโมง OT ก่อนอนุมัติ","err");return;}
+  req.status="approved"; req.approvedHours=parseFloat(hours);
+  await Store.set(K_OT,otRequests);
+  SheetDB.push("saveOtRequests",{otRequests});
+  toast("อนุมัติ OT "+req.empName+" "+req.approvedHours+" ชม. แล้ว","ok");
+  renderOtApprove();renderDash();renderReport();
+}
+async function rejectOT(id){
+  const req=otRequests.find(r=>r.id===id); if(!req)return;
+  req.status="rejected"; req.approvedHours=0;
+  await Store.set(K_OT,otRequests);
+  SheetDB.push("saveOtRequests",{otRequests});
+  toast("ปฏิเสธคำขอ OT ของ "+req.empName,"ok");
+  renderOtApprove();renderDash();renderReport();
+}
+function setOtTab(tab){
+  _otTab=tab;
+  ["pending","approved","rejected"].forEach(t=>{
+    const b=document.getElementById("otTab"+t.charAt(0).toUpperCase()+t.slice(1));
+    if(b) b.classList.toggle("on",t===tab);
+  });
+  renderOtApprove();
+}
+function renderOtApprove(){
+  const list=otRequests.filter(r=>r.status===_otTab);
+  const el=document.getElementById("otApproveList"); if(!el)return;
+  const sub=document.getElementById("otApproveSub");
+  const allPending=otRequests.filter(r=>r.status==="pending").length;
+  if(sub) sub.textContent=allPending>0?"รอดำเนินการ "+allPending+" รายการ":"";
+  el.innerHTML=list.length? list.map(r=>{
+    const sh=SHIFT[r.shift]||SHIFT.day;
+    const late=isLateArrival(r.clockIn,r.shift);
+    return `<div class="ot-req-card">
+      <div class="top">
+        <div class="av">${esc(initials(r.empName))}</div>
+        <div class="info">
+          <div class="nm">${esc(r.empName)} <span class="ot-status ${r.status}">${{pending:"⏳ รอ",approved:"✅ อนุมัติ",rejected:"❌ ปฏิเสธ"}[r.status]}</span></div>
+          <div class="meta">${esc(r.empId)} · ${esc(r.dept)} · ${r.date}</div>
+        </div>
+        <div>${shiftChip(sh)}</div>
+      </div>
+      <div class="hours-row">
+        <div style="flex:1;font-size:13px;color:var(--muted)">
+          เข้างาน: <b>${fmtClock(r.clockIn)||"—"}</b>${late?" <span style=\"color:var(--red-d);font-size:11px;font-weight:700\">⚠ สาย</span>":""}
+        </div>
+        ${r.status==="approved"?`<div class="big">${r.approvedHours}<small>ชม. OT</small></div>`:""}
+      </div>
+      ${r.status==="pending"?`
+      <div class="actions">
+        <div class="ot-approve-input">
+          <input type="number" id="otH_${r.id}" min="0.5" max="8" step="0.5" value="2"/>
+          <span style="font-size:12px;color:var(--muted)">ชม.</span>
+        </div>
+        <button class="btn-approve" onclick="approveOT('${r.id}',document.getElementById('otH_${r.id}').value)">✓ อนุมัติ</button>
+        <button class="btn-reject" onclick="rejectOT('${r.id}')">✕ ปฏิเสธ</button>
+      </div>`:""}
+    </div>`;
+  }).join(""):`<div class="empty" style="margin:30px 0;text-align:center;color:var(--muted)">ไม่มีรายการ</div>`;
+}
+function isLateArrival(clockInIso,shift){
+  if(!clockInIso) return false;
+  const d=new Date(clockInIso);const h=d.getHours(),m=d.getMinutes();const mins=h*60+m;
+  if(shift==="night") return (mins>=20*60+15)||(mins<5*60);
+  return mins>8*60+15;
+}
+/* ===================================================================
+   EMPLOYEE STATS
+   =================================================================== */
+function openEmpStat(id){
+  _statEmpId=id; _statFilter="week";
+  const e=employees.find(x=>x.id===id); if(!e)return;
+  document.getElementById("empStatName").textContent=e.name+" · "+e.id;
+  const h=document.getElementById("empStatHeader");
+  h.innerHTML=`<div class="nm">${esc(e.name)}</div>
+    <div class="sub">${esc(e.position)} · ${esc(e.department)}</div>`;
+  document.querySelectorAll(".fpill").forEach((b,i)=>{b.classList.toggle("on",i===0);});
+  setStatFilter("week"); navTo("empstat");
+}
+function setStatFilter(f){
+  _statFilter=f;
+  const cr=document.getElementById("empStatCustomRange");
+  if(cr) cr.style.display=f==="custom"?"block":"none";
+  renderEmpStat();
+}
+function statDateRange(){
+  const n=new Date();
+  if(_statFilter==="week"){const day=n.getDay()||7;const s=new Date(n);s.setDate(n.getDate()-day+1);return{start:ymd(s),end:ymd(n)};}
+  if(_statFilter==="month") return{start:ymd(new Date(n.getFullYear(),n.getMonth(),1)),end:ymd(n)};
+  const s=document.getElementById("statStart"),e=document.getElementById("statEnd");
+  return{start:(s&&s.value)||ymd(new Date(n.getFullYear(),n.getMonth(),1)),end:(e&&e.value)||ymd(n)};
+}
+function weekLabel(d){
+  const tmp=new Date(d+"T00:00:00");const day=tmp.getDay()||7;
+  const mon=new Date(tmp);mon.setDate(tmp.getDate()-day+1);
+  const sun=new Date(mon);sun.setDate(mon.getDate()+6);
+  return ymd(mon)+" – "+ymd(sun);
+}
+function renderEmpStat(){
+  const id=_statEmpId; if(!id)return;
+  const e=employees.find(x=>x.id===id); if(!e)return;
+  const {start,end}=statDateRange();
+  const dates=datesInRange(start,end);
+  let workDays=0,leaveDays=0,lateDays=0;const attRows=[];
+  dates.forEach(d=>{
+    const R=records[d];if(!R)return;
+    const a=R.att&&R.att[id],ab=R.abs&&R.abs[id];
+    if(a&&a.in){workDays++;const sh=classifyShift(a.in);const late=isLateArrival(a.in,sh.key);
+      if(late)lateDays++;attRows.push({date:d,in:a.in,out:a.out,shift:sh,late});}
+    else if(ab)leaveDays++;
+  });
+  const reqs=otRequests.filter(r=>r.empId===id&&r.status==="approved"&&r.date>=start&&r.date<=end);
+  const totalOtH=reqs.reduce((s,r)=>s+r.approvedHours,0);
+  document.getElementById("statGrid").innerHTML=`
+    <div class="stat-box present"><div class="n">${workDays}</div><div class="l">วันทำงาน</div></div>
+    <div class="stat-box late"><div class="n">${lateDays}</div><div class="l">มาสาย</div></div>
+    <div class="stat-box ot"><div class="n">${totalOtH.toFixed(1)}</div><div class="l">ชม.OT อนุมัติ</div></div>
+    <div class="stat-box"><div class="n">${leaveDays}</div><div class="l">วันลา</div></div>
+    <div class="stat-box"><div class="n">${dates.length}</div><div class="l">วันทั้งหมด</div></div>
+    <div class="stat-box"><div class="n">${dates.length-workDays-leaveDays}</div><div class="l">ไม่มีบันทึก</div></div>`;
+  const weeks={};reqs.forEach(r=>{const w=weekLabel(r.date);weeks[w]=(weeks[w]||0)+r.approvedHours;});
+  const wEl=document.getElementById("statOtWeek");
+  wEl.innerHTML=Object.keys(weeks).length?Object.keys(weeks).map(w=>`
+    <div class="ot-week-row"><span class="wlabel">${w}</span><span class="wval">${weeks[w].toFixed(1)} ชม.</span></div>`).join("")
+    :`<div class="empty" style="margin:8px 14px">ไม่มีข้อมูล OT</div>`;
+  const alEl=document.getElementById("statAttList");
+  alEl.innerHTML=attRows.length?attRows.slice().reverse().map(({date,in:ci,out,shift,late})=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:11px 14px;border-top:1px solid var(--line-soft);">
+      <div style="flex:none;font-family:'IBM Plex Mono';font-size:12px;color:var(--muted);min-width:70px">${date}</div>
+      <div style="flex:1">${shiftChip(shift)}${late?` <span style="font-size:10.5px;color:var(--red-d);font-weight:700;margin-left:4px">⚠ สาย</span>`:""}</div>
+      <div style="font-family:'IBM Plex Mono';font-size:11px;color:var(--muted-2)">${fmtClock(ci)||"—"}→${fmtClock(out)||"—"}</div>
+    </div>`).join(""):`<div class="empty" style="margin:8px 14px">ไม่มีบันทึก</div>`;
+}
+/* ===================================================================
+   SHIFT COVERAGE
+   =================================================================== */
+function setCovTab(tab){
+  _covTab=tab;
+  ["day","week","month"].forEach(t=>{
+    const b=document.getElementById("covTab"+t.charAt(0).toUpperCase()+t.slice(1));
+    if(b)b.classList.toggle("on",t===tab);
+  });renderCoverage();
+}
+function covDates(){
+  const n=new Date();
+  if(_covTab==="day")return[ymd(n)];
+  if(_covTab==="week"){const day=n.getDay()||7;const s=new Date(n);s.setDate(n.getDate()-day+1);return datesInRange(ymd(s),ymd(n));}
+  return datesInRange(ymd(new Date(n.getFullYear(),n.getMonth(),1)),ymd(n));
+}
+function covColor(pct){return pct>=100?"green":pct>=70?"yellow":"red";}
+function renderCoverage(){
+  const dates=covDates();
+  const rd=parseInt(document.getElementById("reqDay")?.value)||10;
+  const rn=parseInt(document.getElementById("reqNight")?.value)||8;
+  const el=document.getElementById("covList");if(!el)return;
+  const act=activeEmps();
+  el.innerHTML=dates.map(d=>{
+    const R=records[d]||{att:{},abs:{}};let dp=0,np=0;
+    act.forEach(e=>{const a=R.att&&R.att[e.id];if(a&&a.in){classifyShift(a.in).key==="day"?dp++:np++;}});
+    const dpct=rd?Math.round(dp/rd*100):0,npct=rn?Math.round(np/rn*100):0;
+    const dc=covColor(dpct),nc=covColor(npct);
+    return `<div class="cov-date-row">
+      <div class="cov-date-label"><b>${thDate(d)}</b>
+        <span style="font-size:11px;color:var(--muted)">${d===ymd(new Date())?" (วันนี้)":""}</span></div>
+      <div class="cov-shifts">
+        <div class="cov-card day"><div class="shift-name">กะกลางวัน</div>
+          <div class="cov-pct ${dc}">${dpct}%</div>
+          <div class="cov-bar"><div class="cov-bar-fill ${dc}" style="width:${Math.min(dpct,100)}%"></div></div>
+          <div class="cov-nums"><span style="font-size:11.5px">มา <b>${dp}</b> / ต้องการ <b>${rd}</b></span>
+          ${dp<rd?`<span style="color:var(--red-d);font-size:11px;font-weight:600">ขาด ${rd-dp}</span>`:""}</div>
+        </div>
+        <div class="cov-card night"><div class="shift-name">กะกลางคืน</div>
+          <div class="cov-pct ${nc}">${npct}%</div>
+          <div class="cov-bar"><div class="cov-bar-fill ${nc}" style="width:${Math.min(npct,100)}%"></div></div>
+          <div class="cov-nums"><span style="font-size:11.5px">มา <b>${np}</b> / ต้องการ <b>${rn}</b></span>
+          ${np<rn?`<span style="color:var(--red-d);font-size:11px;font-weight:600">ขาด ${rn-np}</span>`:""}</div>
+        </div>
+      </div>
+    </div>`;
+  }).join("");
+}
+/* ===================================================================
+   SETTINGS STATUS UPDATE
+   =================================================================== */
+function updateDbStatus(){
+  const last=SheetDB._last?(" · ซิงก์ "+SheetDB._last):"";
+  const map={off:{txt:"ยังไม่เชื่อมต่อ",pill:"⚪ ออฟไลน์",cls:"off"},
+    online:{txt:"เชื่อมต่อสำเร็จ"+last,pill:"🟢 Online",cls:"online"},
+    offline:{txt:"เชื่อมต่อไม่ได้ (ใช้ข้อมูลในเครื่อง)",pill:"🔴 Offline",cls:"offline"}};
+  const m=map[SheetDB.status]||map.off;
+  const a=document.getElementById("settingDbStatus"),b=document.getElementById("settingDbPill"),c=document.getElementById("dbStatus");
+  if(a)a.textContent=m.txt;if(b){b.textContent=m.pill;b.className="db-pill "+m.cls;}
+  if(c){c.textContent=m.txt;c.style.color=m.cls==="online"?"var(--green-d)":m.cls==="offline"?"var(--red-d)":"var(--muted)";}
+}
  
 /* ===================================================================
    MENU + PASSWORD GATE
@@ -1691,7 +2131,7 @@ async function toggleLock(mk){
   renderLockScreen(); recalcAll();
 }
  
-function renderAll(){updateDateLabel();renderDash();renderEmpFilters();renderEmpList();renderAbsence();renderReport();
+function renderAll(){updateDateLabel();renderDash();renderEmpFilters();renderEmpList();renderAbsence();renderReport();renderOtApprove();
   if(currentEmp)renderScanResult();}
  
 /* ---------- events ---------- */
@@ -1727,7 +2167,10 @@ document.getElementById("openSheetBtn").onclick=openGSheet;
 document.getElementById("pushSheetBtn").onclick=pushToSheet;
 document.getElementById("dbPullBtn").onclick=dbPull;
 document.getElementById("dbPushAllBtn").onclick=dbPushAll;
-document.getElementById("howToBtn").onclick=()=>{const h=document.getElementById("howTo");h.style.display=h.style.display==="none"?"block":"none";};
+/* coverage req inputs */
+['reqDay','reqNight'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('change',renderCoverage);});
+/* stat date custom range */
+['statStart','statEnd'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('change',renderEmpStat);});
  
 /* kiosk link controls */
 function kioskLink(){return location.origin+location.pathname+location.search+"#kiosk";}
@@ -1772,9 +2215,11 @@ try{
       if(st&&st.employees&&st.employees.length){
         employees=st.employees;records=st.records||{};corrections=st.corrections||[];
         locks=st.locks||{};adminLog=st.adminLog||[];
+        if(st.otRequests)otRequests=st.otRequests;
         employees.forEach(e=>{if(!e.defaultShift)e.defaultShift="day";});
         await Store.set(K_EMP,employees);await Store.set(K_REC,records);
         await Store.set(K_CORR,corrections);await Store.set(K_LOCK,locks);await Store.set(K_ALOG,adminLog);
+        await Store.set(K_OT,otRequests);
         _lastSig=JSON.stringify(st);markSynced();
       }
     }catch(e){SheetDB.setStatus("offline");}
@@ -1782,8 +2227,18 @@ try{
   updateDbStatus();
   renderAll();
   // ซิงก์อัตโนมัติทุก 20 วินาที + ตอนสลับกลับมาที่แอป เพื่อให้ทุกเครื่องเห็นข้อมูลตรงกัน
-  setInterval(pullQuiet,20000);
-  document.addEventListener("visibilitychange",()=>{if(!document.hidden)pullQuiet();});
+  // ซิงก์อัตโนมัติ: เปิดอยู่ = ทุก 30 วิ, เบื้องหลัง/ล็อกหน้าจอ = ทุก 5 นาที
+  let _syncTimer=null;
+  function restartSyncTimer(){
+    clearInterval(_syncTimer);
+    const interval=document.hidden?300000:30000;   // hidden=5นาที, visible=30วิ
+    _syncTimer=setInterval(pullQuiet,interval);
+  }
+  restartSyncTimer();
+  document.addEventListener("visibilitychange",()=>{
+    restartSyncTimer();                             // ปรับ interval ใหม่ทันทีเมื่อสลับ
+    if(!document.hidden)pullQuiet();                // ดึงทันทีเมื่อกลับมา
+  });
   window.addEventListener("focus",pullQuiet);
 
   if(location.hash.toLowerCase().includes("kiosk")
