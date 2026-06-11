@@ -549,10 +549,7 @@ main{flex:1;padding:16px 16px 96px;}
       <div class="card" style="padding:6px 16px;margin-bottom:6px;" id="repValidation"></div>
       <div class="section-t">สรุปตามกะ</div>
       <div class="shiftsum" id="shiftSummary"></div>
-      <div class="section-t">สรุปเวลาทำงาน (ฐาน 8 ชม. · ส่วนเกินเป็น OT)</div>
-      <div class="wt-totals" id="wtTotals"></div>
-      <div class="card" id="wtList" style="padding:4px 0;"></div>
-      <div class="section-t">สรุป OT (รวมทั้งช่วง · เรียงมาก→น้อย)</div>
+      <div class="section-t">OT ที่อนุมัติแล้ว (รวมทั้งช่วง · เรียงมาก→น้อย)</div>
       <div class="card" id="otList" style="padding:4px 0;"></div>
  
       <div class="section-t">ประวัติการแก้ไขเวลา (Correction History)</div>
@@ -663,7 +660,11 @@ main{flex:1;padding:16px 16px 96px;}
 
       <div class="setting-group">
         <div class="setting-group-head">ซิงก์ข้อมูล</div>
-        <div style="padding:12px 16px;display:flex;gap:8px;">
+        <div style="padding:10px 16px 4px;display:flex;gap:8px;">
+          <button class="btn btn-amber btn-block" id="dbRefreshBtn" style="font-size:13.5px;">🔄 Refresh ข้อมูลตอนนี้</button>
+        </div>
+        <div style="padding:4px 16px 4px;font-size:11.5px;color:var(--muted)" id="lastSyncLabel">— ยังไม่ได้ซิงก์</div>
+        <div style="padding:4px 16px 12px;display:flex;gap:8px;">
           <button class="btn btn-line" style="flex:1" id="dbPullBtn">⟳ ดึงจาก Sheet</button>
           <button class="btn btn-amber" style="flex:1" id="dbPushAllBtn">⤒ ส่งทั้งหมด</button>
         </div>
@@ -901,30 +902,10 @@ function fmtHours(h){ if(h<=0) return "0 ชม."; const H=Math.floor(h), M=Math
 function activeEmps(){return employees.filter(e=>e.active);}
  
 /* ===== คำนวณเวลาทำงาน: ฐาน 8 ชม. ส่วนที่เกินเป็น OT ===== */
-const STD_MIN=8*60;                       // ชั่วโมงทำงานมาตรฐาน = 8 ชม.
 function fmtHM(min){                       // แสดงผลเป็น "H ชม. M นาที"
   min=Math.max(0,Math.round(min||0));
   const H=Math.floor(min/60), M=min%60;
   return H+" ชม. "+M+" นาที";
-}
-function fmtHMshort(min){                   // แสดงผลกระชับ "H:MM"
-  min=Math.max(0,Math.round(min||0));
-  return Math.floor(min/60)+":"+pad(min%60);
-}
-function workSummary(a){
-  // ต้องมีเวลาเข้างานก่อนจึงคำนวณได้
-  if(!a||!a.in) return null;
-  // จุดสิ้นสุดช่วงงาน: ใช้เวลาออกงานก่อน ถ้าไม่มีใช้จบ OT แล้วค่อยเริ่ม OT
-  const end=a.out||a.otE||a.otS||null;
-  if(!end) return null;
-  const total=Math.max(0,Math.round((new Date(end)-new Date(a.in))/60000)); // เวลาอยู่ปฏิบัติงานทั้งหมด (นาที)
-  let otBlock=0;                            // ช่วง OT ที่บันทึกไว้ (นาที)
-  if(a.otS&&a.otE) otBlock=Math.max(0,Math.round((new Date(a.otE)-new Date(a.otS))/60000));
-  const work=Math.max(0,total-otBlock);     // เวลาทำงาน (ไม่รวมช่วง OT ที่บันทึก)
-  const regular=Math.min(work,STD_MIN);     // เวลาปกติ จำกัดที่ 8 ชม.
-  const over=Math.max(0,work-STD_MIN);      // ทำงานเกิน 8 ชม. → นับเป็น OT ด้วย
-  const ot=otBlock+over;                    // OT รวม = OT ที่บันทึก + ส่วนเกิน 8 ชม.
-  return {regular,ot,total:regular+ot,complete:!!a.out};
 }
  
 /* ===================================================================
@@ -1137,6 +1118,7 @@ async function stamp(key){
   const names={in:"เข้างาน",otS:"เริ่ม OT",otE:"จบ OT",out:"ออกงาน"};
   toast(e.name+" · "+names[key]+" "+fmtClock(now),"ok");
   renderScanResult();renderDash();renderReport();renderAbsence();
+  pullAfterWrite(); // §7 ทุกเครื่องเห็นการลงเวลาทันที
 }
  
 /* camera scanning */
@@ -1227,6 +1209,7 @@ async function classify(id,type){
   await Store.set(K_REC,records);
   SheetDB.setAbsence(curDate,id,type);
   renderAbsence();renderDash(); renderReport();
+  pullAfterWrite(); // §7
   const e=employees.find(x=>x.id===id);
   toast(type? e.name+" → "+({sick:"ลาป่วย",vac:"ลาพักร้อน",biz:"ลากิจ",abs:"ขาดงาน"}[type]):"ล้างประเภทแล้ว","ok");
 }
@@ -1241,7 +1224,6 @@ function aggregate(){
   const act=activeEmps();
   const numDays=dates.length||1;
   let present=0,sick=0,vac=0,biz=0,absent=0;
-  const map={}; act.forEach(e=>{map[e.id]={e,reg:0,ot:0};});
   const shift={day:{present:0,sick:0,vac:0,biz:0,absent:0},night:{present:0,sick:0,vac:0,biz:0,absent:0}};
   dates.forEach(d=>{
     const R=records[d]; if(!R)return;
@@ -1250,7 +1232,6 @@ function aggregate(){
       if(a&&a.in){
         present++;
         const sh=classifyShift(a.in).key; shift[sh].present++;
-        const w=workSummary(a); if(w){map[e.id].reg+=w.regular;map[e.id].ot+=w.ot;}
       }else if(ab){
         const sh=(e.defaultShift&&shift[e.defaultShift])?e.defaultShift:"day";
         if(ab==="sick"){sick++;shift[sh].sick++;}
@@ -1286,7 +1267,7 @@ function renderReport(){
     ["ความครบถ้วน",A.comp+"%",A.comp>=100?"var(--green-d)":"var(--amber-d)"],
   ].map(([l,v,c])=>`<div style="display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--line-soft);font-size:14px">
       <span style="color:var(--muted)">${l}</span><b class="mono" style="color:${c||"var(--ink)"};font-size:16px">${v}</b></div>`).join("");
-  renderShiftSummary(A); renderWorkTimeAgg(A); renderOTAgg(A); renderHistory();
+  renderShiftSummary(A); renderApprovedOTSummary(A); renderHistory();
 }
 function renderShiftSummary(A){
   document.getElementById("shiftSummary").innerHTML=[["day",SHIFT.day],["night",SHIFT.night]].map(([k,m])=>{
@@ -1302,28 +1283,30 @@ function renderShiftSummary(A){
       </div></div>`;
   }).join("");
 }
-function renderWorkTimeAgg(A){
-  let sumReg=0,sumOt=0;A.workList.forEach(x=>{sumReg+=x.reg;sumOt+=x.ot;});
-  document.getElementById("wtTotals").innerHTML=`
-    <div class="wt-tot reg"><div class="l">เวลาทำงานปกติ รวมทั้งช่วง</div><div class="v">${fmtHM(sumReg)}</div></div>
-    <div class="wt-tot ot"><div class="l">OT รวมทั้งช่วง</div><div class="v">${fmtHM(sumOt)}</div></div>`;
-  document.getElementById("wtList").innerHTML=A.workList.length? A.workList.map(({e,reg,ot})=>{
-    const span=Math.max(reg+ot,1);const regPct=Math.round(reg/span*100),otPct=100-regPct;
-    return `<div class="wt-row"><div class="av">${esc(initials(e.name))}</div>
-      <div class="who"><div class="nm">${esc(e.name)}</div>
-        <div class="sub">${esc(e.id)} · ${esc(e.department)}</div>
-        <div class="wt-bar"><i class="b-reg" style="width:${regPct}%"></i><i class="b-ot" style="width:${otPct}%"></i></div></div>
-      <div class="wt-figs"><div class="f reg"><div class="n">${fmtHMshort(reg)}</div><div class="t">ปกติ</div></div>
-        <div class="f ot"><div class="n">${fmtHMshort(ot)}</div><div class="t">OT</div></div></div>
-    </div>`;}).join(""):`<div class="empty" style="margin:8px 14px">ช่วงนี้ยังไม่มีพนักงานที่ลงเวลาเข้างาน</div>`;
-}
-function renderOTAgg(A){
-  document.getElementById("otList").innerHTML=A.otList.length? A.otList.map(({e,ot})=>`
+function renderApprovedOTSummary(A){
+  const dates=new Set(A.dates);
+  const approved=otRequests.filter(r=>r.status==="approved"&&dates.has(r.date));
+  const byEmp={};
+  approved.forEach(r=>{
+    if(!byEmp[r.empId]) byEmp[r.empId]={
+      e:employees.find(x=>x.id===r.empId)||{id:r.empId,name:r.empName,department:r.dept||""},h:0};
+    byEmp[r.empId].h+=r.approvedHours;
+  });
+  const rows=Object.values(byEmp).sort((a,b)=>b.h-a.h);
+  const totalH=rows.reduce((s,x)=>s+x.h,0);
+  const fmtH=h=>{const H=Math.floor(h),M=Math.round((h-H)*60);return H+"ชม."+(M>0?" "+M+"น.":"");};
+  const el=document.getElementById("otList"); if(!el)return;
+  el.innerHTML=rows.length?
+    `<div style="display:flex;justify-content:space-between;align-items:center;padding:11px 14px;border-bottom:1px solid var(--line-soft);">
+      <span style="font-size:13px;color:var(--muted)">รวมทั้งช่วง (อนุมัติแล้ว)</span>
+      <span style="font-family:'Barlow Condensed';font-size:22px;font-weight:700;color:var(--amber-d)">${totalH.toFixed(1)} ชม.</span>
+    </div>`+rows.map(({e,h})=>`
     <div class="ot-row">
       <div class="av" style="width:38px;height:38px;border-radius:10px;background:var(--steel-800);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed';font-weight:600;flex:none">${esc(initials(e.name))}</div>
       <div class="info"><div class="nm">${esc(e.name)}</div><div class="sub">${esc(e.department)} · ${(SHIFT[e.defaultShift]||SHIFT.day).label}</div></div>
-      <div class="hrs">${(ot/60).toFixed(1)}<small>${fmtHM(ot)}</small></div>
-    </div>`).join(""):`<div class="empty" style="margin:8px 14px">ช่วงนี้ยังไม่มีการบันทึก OT</div>`;
+      <div class="hrs">${h.toFixed(1)}<small>${fmtH(h)}</small></div>
+    </div>`).join("")
+    :`<div class="empty" style="margin:8px 14px">ยังไม่มี OT ที่อนุมัติในช่วงนี้</div>`;
 }
 function renderHistory(){
   const dates=new Set(rangeDates());const q=histQuery.toLowerCase();
@@ -1347,13 +1330,10 @@ function buildRows(){
   A.dates.forEach(d=>{const R=records[d];
     activeEmps().forEach(e=>{
       const a=(R&&R.att&&R.att[e.id])||null, ab=(R&&R.abs&&R.abs[e.id])||null;
-      if(!a&&!ab) return;
-      const w=a?workSummary(a):null;
-      const sh=a&&a.in?classifyShift(a.in):(SHIFT[e.defaultShift]||SHIFT.day);
+      if(!a&&!ab) return;      const sh=a&&a.in?classifyShift(a.in):(SHIFT[e.defaultShift]||SHIFT.day);
       const st=ab?tmap[ab]:(a&&a.in?(a.out?"ออกงานแล้ว":"อยู่ในกะ"):"ไม่มีบันทึก");
       att.push({วันที่:d,รหัส:e.id,ชื่อ:e.name,แผนก:e.department,กะ:sh.label,
-        เข้างาน:fmtClock(a&&a.in)||"",เริ่มOT:fmtClock(a&&a.otS)||"",จบOT:fmtClock(a&&a.otE)||"",ออกงาน:fmtClock(a&&a.out)||"",
-        เวลาทำงานปกติ:w?fmtHM(w.regular):"","OT(เกิน8ชม.)":w?fmtHM(w.ot):"",เวลารวม:w?fmtHM(w.total):"",สถานะ:st});
+        เข้างาน:fmtClock(a&&a.in)||"",เริ่มOT:fmtClock(a&&a.otS)||"",จบOT:fmtClock(a&&a.otE)||"",ออกงาน:fmtClock(a&&a.out)||"",สถานะ:st});
     });
   });
   const summary=[
@@ -1363,17 +1343,7 @@ function buildRows(){
     {รายการ:"ลาพักร้อน",ค่า:A.vac},{รายการ:"ลากิจ",ค่า:A.biz},{รายการ:"ขาดงาน",ค่า:A.absent},
     {รายการ:"ความครบถ้วน (%)",ค่า:A.comp},
   ];
-  return {att,summary,work:workRows(A),shiftRows:shiftRows(A),corrRows:corrRows()};
-}
-function workRows(A){
-  const rows=A.workList.map(({e,reg,ot})=>({รหัส:e.id,ชื่อ:e.name,แผนก:e.department,
-    กะเริ่มต้น:(SHIFT[e.defaultShift]||SHIFT.day).label,
-    ทำงานปกติ:fmtHM(reg),OT:fmtHM(ot),รวม:fmtHM(reg+ot),
-    "ปกติ(ชม.)":Number((reg/60).toFixed(2)),"OT(ชม.)":Number((ot/60).toFixed(2))}));
-  let tReg=0,tOt=0;A.workList.forEach(x=>{tReg+=x.reg;tOt+=x.ot;});
-  rows.push({รหัส:"",ชื่อ:"รวมทั้งช่วง",แผนก:"",กะเริ่มต้น:"",ทำงานปกติ:fmtHM(tReg),OT:fmtHM(tOt),รวม:fmtHM(tReg+tOt),
-    "ปกติ(ชม.)":Number((tReg/60).toFixed(2)),"OT(ชม.)":Number((tOt/60).toFixed(2))});
-  return rows;
+  return {att,summary,shiftRows:shiftRows(A),corrRows:corrRows()};
 }
 function shiftRows(A){
   return ["day","night"].map(k=>{const s=A.shift[k];const m=SHIFT[k];
@@ -1393,11 +1363,12 @@ function corrRows(){
 function exportExcel(){
   if(typeof XLSX==="undefined"){toast("ไลบรารี Excel โหลดไม่สำเร็จ","err");return;}
   try{
-    const {att,summary,work,shiftRows:sr,corrRows:cr}=buildRows();
+    const {att,summary,shiftRows:sr,corrRows:cr}=buildRows();
     const wb=XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(summary),"สรุป");
     XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(sr),"สรุปตามกะ");
-    XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(work),"สรุปเวลาทำงาน");
+    const otSheet=otRequests.filter(r=>r.status==="approved"&&r.date>=repStart&&r.date<=repEnd).map(r=>({วันที่:r.date,รหัส:r.empId,ชื่อ:r.empName,แผนก:r.dept,กะ:(SHIFT[r.shift]||SHIFT.day).label,"OT(ชม.)": r.approvedHours}));
+    XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(otSheet.length?otSheet:[{หมายเหตุ:"ไม่มี OT ที่อนุมัติ"}]),"OT อนุมัติ");
     XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(att.length?att:[{หมายเหตุ:"ไม่มีข้อมูลในช่วงนี้"}]),"ลงเวลา");
     XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(cr.length?cr:[{หมายเหตุ:"ไม่มีการแก้ไขในช่วงนี้"}]),"ประวัติแก้ไข");
     XLSX.writeFile(wb,"ShiftBoard_"+repStart+"_ถึง_"+repEnd+".xlsx");
@@ -1432,7 +1403,7 @@ function openGSheet(){const u=document.getElementById("cfgSheet").value.trim();
    - localStorage ยังทำหน้าที่เป็น cache ออฟไลน์ ถ้าเน็ตล่มแอปยังทำงานต่อได้
    =================================================================== */
 const SheetDB={
-  status:"off",                                   // off | online | offline
+  status:"off",
   url(){return (config.scriptUrl||"").trim();},
   enabled(){return /^https?:\/\//.test(this.url());},
   setStatus(s){this.status=s;updateDbStatus();},
@@ -1452,7 +1423,6 @@ const SheetDB={
       let j=null; try{ j=await res.json(); }catch(_){}
       this.setStatus("online"); return j||{ok:true};
     }catch(e){
-      // คำขอแบบ text/plain ไปถึงเซิร์ฟเวอร์แล้วแม้อ่านผลกลับไม่ได้ (CORS) — ไม่ยิงซ้ำกันข้อมูลซ้ำ
       this.setStatus(navigator.onLine?"online":"offline"); return {ok:true,unverified:true};
     }
   },
@@ -1463,24 +1433,42 @@ const SheetDB={
   addCorrection(correction){return this.push("addCorrection",{correction});},
   setLock(month,locked){return this.push("setLock",{month,locked});},
   addAdminLog(entry){return this.push("addAdminLog",{entry});},
-  saveAll(){return this.push("saveAll",{state:{employees,records,corrections,locks,adminLog,otRequests}});},
+  /* §4 §6 — upsert OT ทีละ row ไม่ทับทั้งตาราง */
+  upsertOtRequest(req){return this.push("upsertOtRequest",{request:req});},
+  /* §5 — sync coverage ขึ้น Sheet */
+  saveCoverage(reqDay,reqNight){return this.push("saveCoverage",{reqDay,reqNight});},
+  saveAll(){return this.push("saveAll",{state:{employees,records,corrections,locks,adminLog,otRequests,
+    coverage:{reqDay:parseInt(document.getElementById("reqDay")?.value)||10,
+              reqNight:parseInt(document.getElementById("reqNight")?.value)||8}}});},
 };
-function updateDbStatus(){
-  const el=document.getElementById("dbStatus");if(!el)return;
-  const last=SheetDB._last?(" · ซิงก์ "+SheetDB._last):"";
-  const map={off:["⚪ ยังไม่เชื่อม Sheet","var(--muted)"],
-    online:["🟢 เชื่อมต่อ Sheet (ฐานข้อมูลหลัก)"+last,"var(--green-d)"],
-    offline:["🔴 ออฟไลน์ — ใช้ข้อมูลในเครื่องชั่วคราว","var(--red-d)"]};
-  const[txt,col]=map[SheetDB.status]||map.off;
-  el.textContent=txt;el.style.color=col;
-}
+/* updateDbStatus: see settings section below */
  
-/* ===== ซิงก์อัตโนมัติ: ดึงข้อมูลล่าสุดจาก Sheet มาแสดงทุกเครื่องให้ตรงกัน ===== */
+/* ===== ซิงก์อัตโนมัติ ===== */
 let _syncing=false,_lastSig="";
 function markSynced(){const d=new Date();SheetDB._last=pad(d.getHours())+":"+pad(d.getMinutes())+":"+pad(d.getSeconds());updateDbStatus();}
+
+/* §7 — ฟังก์ชันกลางรับ state จาก Sheet แล้วอัปเดตทุก module */
+async function applySt(st){
+  if(!st||!st.employees) return;
+  if(st.employees.length) employees=st.employees;
+  records=st.records||{}; corrections=st.corrections||[];
+  locks=st.locks||{}; adminLog=st.adminLog||[];
+  if(st.otRequests) otRequests=st.otRequests;
+  employees.forEach(e=>{if(!e.defaultShift)e.defaultShift="day";});
+  /* §5 Coverage จาก Sheet */
+  if(st.coverage){
+    const rd=document.getElementById("reqDay"), rn=document.getElementById("reqNight");
+    if(rd) rd.value=st.coverage.reqDay||10;
+    if(rn) rn.value=st.coverage.reqNight||8;
+  }
+  /* cache ลง localStorage เป็น offline backup */
+  await Store.set(K_EMP,employees); await Store.set(K_REC,records);
+  await Store.set(K_CORR,corrections); await Store.set(K_LOCK,locks);
+  await Store.set(K_ALOG,adminLog); await Store.set(K_OT,otRequests);
+}
+
 async function pullQuiet(){
   if(!SheetDB.enabled()||_syncing)return;
-  // เลี่ยงการดึงระหว่างผู้ใช้กำลังทำงาน (เปิด popup / พิมพ์ / สแกนกล้อง)
   if(document.querySelector(".scrim.on"))return;
   const ae=document.activeElement;if(ae&&/INPUT|SELECT|TEXTAREA/.test(ae.tagName))return;
   if(scanner||kScanner)return;
@@ -1491,20 +1479,21 @@ async function pullQuiet(){
       const sig=JSON.stringify(st);
       if(sig!==_lastSig){
         _lastSig=sig;
-        if(st.employees.length)employees=st.employees;
-        records=st.records||{};corrections=st.corrections||[];locks=st.locks||{};adminLog=st.adminLog||[];
-        employees.forEach(e=>{if(!e.defaultShift)e.defaultShift="day";});
-        await Store.set(K_EMP,employees);await Store.set(K_REC,records);
-        await Store.set(K_CORR,corrections);await Store.set(K_LOCK,locks);await Store.set(K_ALOG,adminLog);
+        await applySt(st);
         renderAll();
-        const ks=document.getElementById("kiosk");if(ks&&ks.classList.contains("on")&&kEmp)kResolve(kEmp.id);
+        const ks=document.getElementById("kiosk");
+        if(ks&&ks.classList.contains("on")&&kEmp)kResolve(kEmp.id);
       }
       markSynced();
     }
   }catch(e){SheetDB.setStatus("offline");}
   _syncing=false;
 }
-/* ดึงข้อมูลจาก Sheet มาแทนที่ในเครื่อง */
+
+/* §7 pull ทันทีหลัง write (ไม่ block UI) */
+function pullAfterWrite(){setTimeout(()=>{_syncing=false;pullQuiet();},800);}
+
+/* ดึงข้อมูลจาก Sheet (ปุ่ม Manual) */
 async function dbPull(){
   if(!SheetDB.enabled()){toast("ใส่ Apps Script URL แล้วกดบันทึกก่อน","err");return;}
   toast("กำลังดึงข้อมูลจาก Sheet...","ok");
@@ -1512,27 +1501,23 @@ async function dbPull(){
     const st=await SheetDB.load();
     if(!st){toast("ดึงข้อมูลไม่สำเร็จ","err");return;}
     if(!st.employees||!st.employees.length){toast("Sheet ยังว่าง — กด 'ส่งทั้งหมดขึ้น Sheet' เพื่อเริ่มต้น","err");return;}
-    employees=st.employees; records=st.records||{}; corrections=st.corrections||[];
-    locks=st.locks||{}; adminLog=st.adminLog||[];
-    employees.forEach(e=>{if(!e.defaultShift)e.defaultShift="day";});
-    await Store.set(K_EMP,employees);await Store.set(K_REC,records);
-    await Store.set(K_CORR,corrections);await Store.set(K_LOCK,locks);await Store.set(K_ALOG,adminLog);
+    await applySt(st);
     _lastSig=JSON.stringify(st);markSynced();
     renderAll();toast("ดึงข้อมูลจาก Sheet สำเร็จ","ok");
   }catch(e){SheetDB.setStatus("offline");toast("ดึงข้อมูลไม่สำเร็จ ตรวจการตั้งค่า/สิทธิ์ Anyone","err");}
 }
-/* ส่งข้อมูลทั้งหมดในเครื่องขึ้น Sheet (sync ครั้งแรก/ย้ายข้อมูล) + ตรวจสอบผล */
+
+/* ส่งทั้งหมด (initial sync ครั้งแรกเท่านั้น) */
 async function dbPushAll(){
   if(!SheetDB.enabled()){toast("ใส่ Apps Script URL แล้วกดบันทึกก่อน","err");return;}
   if(!confirm("การส่งทั้งหมดจะเขียนทับข้อมูลใน Sheet ด้วยข้อมูลในเครื่องนี้\nใช้เฉพาะตอนตั้งค่าครั้งแรก หรือเมื่อต้องการให้เครื่องนี้เป็นต้นฉบับ\n\nดำเนินการต่อ?"))return;
   await saveConfig();
   toast("กำลังส่งข้อมูลทั้งหมดขึ้น Sheet...","ok");
   await SheetDB.saveAll();
-  // ตรวจสอบจริง: ดึงกลับมานับจำนวนพนักงานใน Sheet
   try{
     const st=await SheetDB.load();
     const n=st&&st.employees?st.employees.length:0;
-    if(n>0){_lastSig=JSON.stringify(st);markSynced();toast("ส่งสำเร็จ ✓ มีพนักงาน "+n+" คนใน Sheet แล้ว","ok");}
+    if(n>0){await applySt(st);_lastSig=JSON.stringify(st);markSynced();toast("ส่งสำเร็จ ✓ มีพนักงาน "+n+" คนใน Sheet แล้ว","ok");}
     else toast("ส่งแล้วแต่ Sheet ยังว่าง — ตรวจ Deploy ใหม่ + สิทธิ์ Anyone","err");
   }catch(e){toast("ส่งแล้ว แต่ตรวจสอบกลับไม่ได้ (CORS/สิทธิ์ Anyone)","err");}
 }
@@ -1541,7 +1526,7 @@ async function pushToSheet(){
   const url=document.getElementById("cfgScript").value.trim();
   if(!/^https?:\/\//.test(url)){toast("ใส่ Apps Script URL ก่อน","err");return;}
   await saveConfig();
-  const {att,summary,work,shiftRows:sr,corrRows:cr}=buildRows();
+  const {att,summary,shiftRows:sr,corrRows:cr}=buildRows();
   const payload={range:{start:repStart,end:repEnd},summary,shift:sr,attendance:att,worktime:work,corrections:cr};
   toast("กำลังส่งข้อมูล...","ok");
   try{
@@ -1755,26 +1740,29 @@ async function requestOT(){
     status:"pending",approvedHours:0,note:""};
   otRequests.unshift(req);
   await Store.set(K_OT,otRequests);
-  SheetDB.push("saveOtRequests",{otRequests});
+  await SheetDB.upsertOtRequest(req);          // §4 §6 upsert ทีละ row
   toast(e.name+" · ส่งคำขอ OT แล้ว — รอการอนุมัติ","ok");
   renderScanResult();renderDash();renderOtApprove();
+  pullAfterWrite();                             // §7 pull หลัง write
 }
 async function approveOT(id,hours){
   const req=otRequests.find(r=>r.id===id); if(!req)return;
   if(!hours||hours<=0){toast("ระบุชั่วโมง OT ก่อนอนุมัติ","err");return;}
   req.status="approved"; req.approvedHours=parseFloat(hours);
   await Store.set(K_OT,otRequests);
-  SheetDB.push("saveOtRequests",{otRequests});
+  await SheetDB.upsertOtRequest(req);          // §4 §6 upsert ทีละ row ไม่ทับตาราง
   toast("อนุมัติ OT "+req.empName+" "+req.approvedHours+" ชม. แล้ว","ok");
   renderOtApprove();renderDash();renderReport();
+  pullAfterWrite();                             // §7 ทุกเครื่องเห็นสถานะ Approved ทันที
 }
 async function rejectOT(id){
   const req=otRequests.find(r=>r.id===id); if(!req)return;
   req.status="rejected"; req.approvedHours=0;
   await Store.set(K_OT,otRequests);
-  SheetDB.push("saveOtRequests",{otRequests});
+  await SheetDB.upsertOtRequest(req);          // §4 §6 upsert ทีละ row
   toast("ปฏิเสธคำขอ OT ของ "+req.empName,"ok");
   renderOtApprove();renderDash();renderReport();
+  pullAfterWrite();
 }
 function setOtTab(tab){
   _otTab=tab;
@@ -1945,14 +1933,16 @@ function renderCoverage(){
    SETTINGS STATUS UPDATE
    =================================================================== */
 function updateDbStatus(){
-  const last=SheetDB._last?(" · ซิงก์ "+SheetDB._last):"";
+  const last=SheetDB._last?(" · ซิงก์ล่าสุด "+SheetDB._last):"";
   const map={off:{txt:"ยังไม่เชื่อมต่อ",pill:"⚪ ออฟไลน์",cls:"off"},
-    online:{txt:"เชื่อมต่อสำเร็จ"+last,pill:"🟢 Online",cls:"online"},
-    offline:{txt:"เชื่อมต่อไม่ได้ (ใช้ข้อมูลในเครื่อง)",pill:"🔴 Offline",cls:"offline"}};
+    online:{txt:"🟢 เชื่อมต่อสำเร็จ"+last,pill:"🟢 Online",cls:"online"},
+    offline:{txt:"🔴 เชื่อมต่อไม่ได้ (ใช้ข้อมูลในเครื่อง)",pill:"🔴 Offline",cls:"offline"}};
   const m=map[SheetDB.status]||map.off;
-  const a=document.getElementById("settingDbStatus"),b=document.getElementById("settingDbPill"),c=document.getElementById("dbStatus");
+  const a=document.getElementById("settingDbStatus"),b=document.getElementById("settingDbPill");
+  const c=document.getElementById("dbStatus"),d=document.getElementById("lastSyncLabel");
   if(a)a.textContent=m.txt;if(b){b.textContent=m.pill;b.className="db-pill "+m.cls;}
   if(c){c.textContent=m.txt;c.style.color=m.cls==="online"?"var(--green-d)":m.cls==="offline"?"var(--red-d)":"var(--muted)";}
+  if(d)d.textContent=SheetDB._last?"ซิงก์ล่าสุด: "+SheetDB._last+(SheetDB.status==="online"?" ✓ สำเร็จ":" ⚠ ออฟไลน์"):"ยังไม่ได้ซิงก์";
 }
  
 /* ===================================================================
@@ -2088,8 +2078,9 @@ async function commitCorrection(id,date,e,reason,reasonOther,override){
     editorRole:"Leader", module:"Attendance Correction",
     editedDate:ymd(now), editedTime:pad(now.getHours())+":"+pad(now.getMinutes()), override:!!override
   });
-  toast("Attendance updated successfully","ok");      // §1 ข้อความสำเร็จ
-  recalcAll();                                         // §11 รีเฟรชทุกหน้า
+  toast("Attendance updated successfully","ok");
+  recalcAll();
+  pullAfterWrite(); // §7
   renderCorrectionForm();
 }
  
@@ -2128,7 +2119,7 @@ async function toggleLock(mk){
     locks[mk]=true; await persistLocks(); SheetDB.setLock(mk,true); await logAdmin("LOCK_MONTH",mk);
     toast(monthLabel(mk)+" ล็อกแล้ว · Payroll Period Locked","ok");
   }
-  renderLockScreen(); recalcAll();
+  renderLockScreen(); recalcAll(); pullAfterWrite();
 }
  
 function renderAll(){updateDateLabel();renderDash();renderEmpFilters();renderEmpList();renderAbsence();renderReport();renderOtApprove();
@@ -2165,10 +2156,16 @@ document.getElementById("excelBtn").onclick=exportExcel;
 document.getElementById("saveCfgBtn").onclick=async()=>{await saveConfig();updateDbStatus();};
 document.getElementById("openSheetBtn").onclick=openGSheet;
 document.getElementById("pushSheetBtn").onclick=pushToSheet;
+document.getElementById("dbRefreshBtn").onclick=()=>{_syncing=false;pullQuiet().then(()=>toast("Refresh สำเร็จ","ok"));};
 document.getElementById("dbPullBtn").onclick=dbPull;
 document.getElementById("dbPushAllBtn").onclick=dbPushAll;
-/* coverage req inputs */
-['reqDay','reqNight'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('change',renderCoverage);});
+/* coverage req inputs — §5 sync ขึ้น Sheet เมื่อเปลี่ยนค่า */
+['reqDay','reqNight'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('change',()=>{
+  renderCoverage();
+  const rd=parseInt(document.getElementById("reqDay")?.value)||10;
+  const rn=parseInt(document.getElementById("reqNight")?.value)||8;
+  SheetDB.saveCoverage(rd,rn);
+});});
 /* stat date custom range */
 ['statStart','statEnd'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('change',renderEmpStat);});
  
@@ -2213,13 +2210,7 @@ try{
     try{
       const st=await SheetDB.load();
       if(st&&st.employees&&st.employees.length){
-        employees=st.employees;records=st.records||{};corrections=st.corrections||[];
-        locks=st.locks||{};adminLog=st.adminLog||[];
-        if(st.otRequests)otRequests=st.otRequests;
-        employees.forEach(e=>{if(!e.defaultShift)e.defaultShift="day";});
-        await Store.set(K_EMP,employees);await Store.set(K_REC,records);
-        await Store.set(K_CORR,corrections);await Store.set(K_LOCK,locks);await Store.set(K_ALOG,adminLog);
-        await Store.set(K_OT,otRequests);
+        await applySt(st);                           // §5 §7 รวม coverage จาก Sheet
         _lastSig=JSON.stringify(st);markSynced();
       }
     }catch(e){SheetDB.setStatus("offline");}
